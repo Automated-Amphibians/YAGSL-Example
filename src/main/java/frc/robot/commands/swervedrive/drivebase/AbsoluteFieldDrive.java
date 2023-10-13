@@ -19,12 +19,10 @@ import swervelib.math.SwerveMath;
 /**
  * An example command that uses an example subsystem.
  */
-public class AbsoluteFieldDrive extends CommandBase
-{
+public class AbsoluteFieldDrive extends CommandBase {
 
   private final SwerveSubsystem swerve;
-  private final DoubleSupplier  vX, vY, heading;
-  private final boolean isOpenLoop;
+  private final DoubleSupplier  vX, vY, heading;  
 
   /**
    * Used to drive a swerve robot in full field-centric mode.  vX and vY supply translation inputs, where x is
@@ -40,32 +38,25 @@ public class AbsoluteFieldDrive extends CommandBase
    *                station glass.
    * @param heading DoubleSupplier that supplies the robot's heading angle.
    */
-  public AbsoluteFieldDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY,
-                            DoubleSupplier heading, boolean isOpenLoop)
-  {
+  public AbsoluteFieldDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier heading) {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
-    this.heading = heading;
-    this.isOpenLoop = isOpenLoop;
+    this.heading = heading;    
 
     addRequirements(swerve);
   }
 
   @Override
-  public void initialize()
-  {
+  public void initialize() {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
+  public void execute() {
 
     // Get the desired chassis speeds based on a 2 joystick module.
-
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(),
-                                                         new Rotation2d(heading.getAsDouble() * Math.PI));
+    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), new Rotation2d(heading.getAsDouble() * Math.PI));
 
     // Limit velocity to prevent tippy
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
@@ -76,22 +67,18 @@ public class AbsoluteFieldDrive extends CommandBase
     SmartDashboard.putString("Translation", translation.toString());
 
     // Make the robot move
-    swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true, isOpenLoop);
-
+    swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted) {
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     return false;
   }
-
 
 }

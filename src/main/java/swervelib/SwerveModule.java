@@ -47,11 +47,7 @@ public class SwerveModule
    * Last swerve module state applied.
    */
   public  SwerveModuleState      lastState;
-  /**
-   * Enable {@link SwerveModuleState} optimizations so the angle is reversed and speed is reversed to ensure the module
-   * never turns more than 90deg.
-   */
-  public  boolean                moduleStateOptimization  = true;
+  
   /**
    * Simulated swerve module.
    */
@@ -149,12 +145,8 @@ public class SwerveModule
    */
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean force)
   {
-    if (moduleStateOptimization)
-    {
-      desiredState = SwerveModuleState.optimize(desiredState,
-                                                Rotation2d.fromDegrees(getAbsolutePosition()));
-    }
-
+    desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(getAbsolutePosition()));
+    
     if (isOpenLoop)
     {
       double percentOutput = desiredState.speedMetersPerSecond / configuration.maxSpeed;
@@ -221,20 +213,19 @@ public class SwerveModule
    *
    * @return Current SwerveModule state.
    */
-  public SwerveModuleState getState()
-  {
+  public SwerveModuleState getState() {
     double     velocity;
     Rotation2d azimuth;
-    double     omega;
-    if (!SwerveDriveTelemetry.isSimulation)
-    {
+    //double     omega;
+
+    if (!SwerveDriveTelemetry.isSimulation) {
       velocity = driveMotor.getVelocity();
       azimuth = Rotation2d.fromDegrees(angleMotor.getPosition());
-      omega = Math.toRadians(angleMotor.getVelocity());
-    } else
-    {
+      /*omega = */Math.toRadians(angleMotor.getVelocity());
+    } else {
       return simModule.getState();
     }
+
     return new SwerveModuleState(velocity, azimuth);
   }
 
@@ -243,20 +234,17 @@ public class SwerveModule
    *
    * @return {@link SwerveModulePosition} of the swerve module.
    */
-  public SwerveModulePosition getPosition()
-  {
+  public SwerveModulePosition getPosition() {
     double     position;
     Rotation2d azimuth;
-    if (!SwerveDriveTelemetry.isSimulation)
-    {
+    if (!SwerveDriveTelemetry.isSimulation) {
       position = driveMotor.getPosition();
       azimuth = Rotation2d.fromDegrees(angleMotor.getPosition());
-    } else
-    {
+    } else {
       return simModule.getPosition();
     }
-    if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH)
-    {
+
+    if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH) {
       SmartDashboard.putNumber("Module[" + configuration.name + "] Angle", azimuth.getDegrees());
     }
     return new SwerveModulePosition(position, azimuth);
@@ -270,20 +258,17 @@ public class SwerveModule
   public double getAbsolutePosition()
   {
     double angle;
-    if (absoluteEncoder != null)
-    {
+    if (absoluteEncoder != null) {
       angle = absoluteEncoder.getAbsolutePosition() - angleOffset;
-      if (absoluteEncoder.readingError)
-      {
+      if (absoluteEncoder.readingError) {
         angle = getRelativePosition();
       }
-    } else
-    {
+    } else {
       angle = getRelativePosition();
     }
+
     angle %= 360;
-    if (angle < 0.0)
-    {
+    if (angle < 0.0) {
       angle += 360;
     }
 
@@ -295,8 +280,7 @@ public class SwerveModule
    *
    * @return Angle in degrees.
    */
-  public double getRelativePosition()
-  {
+  public double getRelativePosition() {
     return angleMotor.getPosition();
   }
 
@@ -305,8 +289,7 @@ public class SwerveModule
    *
    * @param brake Set the brake mode.
    */
-  public void setMotorBrake(boolean brake)
-  {
+  public void setMotorBrake(boolean brake) {
     driveMotor.setMotorBrake(brake);
   }
 
@@ -315,8 +298,7 @@ public class SwerveModule
    *
    * @return {@link SwerveMotor} for the angle/steering motor of the module.
    */
-  public SwerveMotor getAngleMotor()
-  {
+  public SwerveMotor getAngleMotor() {
     return angleMotor;
   }
 
@@ -325,8 +307,7 @@ public class SwerveModule
    *
    * @return {@link SwerveMotor} for the drive motor of the module.
    */
-  public SwerveMotor getDriveMotor()
-  {
+  public SwerveMotor getDriveMotor() {
     return driveMotor;
   }
 
@@ -335,8 +316,7 @@ public class SwerveModule
    *
    * @return {@link SwerveModuleConfiguration} for the {@link SwerveModule}.
    */
-  public SwerveModuleConfiguration getConfiguration()
-  {
+  public SwerveModuleConfiguration getConfiguration() {
     return configuration;
   }
 }

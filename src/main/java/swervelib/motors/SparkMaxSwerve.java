@@ -24,18 +24,22 @@ public class SparkMaxSwerve extends SwerveMotor
    * SparkMAX Instance.
    */
   public  CANSparkMax           motor;
+
   /**
    * Integrated encoder.
    */
   public  RelativeEncoder       encoder;
+
   /**
    * Absolute encoder attached to the SparkMax (if exists)
    */
   public  AbsoluteEncoder       absoluteEncoder;
+
   /**
    * Closed-loop PID controller.
    */
   public  SparkMaxPIDController pid;
+
   /**
    * Factory default already occurred.
    */
@@ -319,29 +323,13 @@ public class SparkMaxSwerve extends SwerveMotor
    * @param feedforward Feedforward in volt-meter-per-second or kV.
    */
   @Override
-  public void setReference(double setpoint, double feedforward)
-  {
-    boolean possibleBurnOutIssue = true;
-//    int pidSlot =
-//        isDriveMotor ? SparkMAX_slotIdx.Velocity.ordinal() : SparkMAX_slotIdx.Position.ordinal();
+  public void setReference(double setpoint, double feedforward) {
     int pidSlot = 0;
 
-    if (isDriveMotor)
-    {
-      configureSparkMax(() ->
-                            pid.setReference(
-                                setpoint,
-                                ControlType.kVelocity,
-                                pidSlot,
-                                feedforward));
-    } else
-    {
-      configureSparkMax(() ->
-                            pid.setReference(
-                                setpoint,
-                                ControlType.kPosition,
-                                pidSlot,
-                                feedforward));
+    if (isDriveMotor) {
+      configureSparkMax(() -> pid.setReference(setpoint, ControlType.kVelocity, pidSlot, feedforward));
+    } else {
+      configureSparkMax(() -> pid.setReference(setpoint, ControlType.kPosition, pidSlot, feedforward));
     }
   }
 
@@ -353,8 +341,7 @@ public class SparkMaxSwerve extends SwerveMotor
    * @param position    Only used on the angle motor, the position of the motor in degrees.
    */
   @Override
-  public void setReference(double setpoint, double feedforward, double position)
-  {
+  public void setReference(double setpoint, double feedforward, double position) {
     setReference(setpoint, feedforward);
   }
 
@@ -364,8 +351,7 @@ public class SparkMaxSwerve extends SwerveMotor
    * @return velocity
    */
   @Override
-  public double getVelocity()
-  {
+  public double getVelocity() {
     return absoluteEncoder == null ? encoder.getVelocity() : absoluteEncoder.getVelocity();
   }
 
@@ -375,8 +361,7 @@ public class SparkMaxSwerve extends SwerveMotor
    * @return Position
    */
   @Override
-  public double getPosition()
-  {
+  public double getPosition() {
     return absoluteEncoder == null ? encoder.getPosition() : absoluteEncoder.getPosition();
   }
 
@@ -386,10 +371,8 @@ public class SparkMaxSwerve extends SwerveMotor
    * @param position Integrated encoder position.
    */
   @Override
-  public void setPosition(double position)
-  {
-    if (absoluteEncoder == null)
-    {
+  public void setPosition(double position) {
+    if (absoluteEncoder == null) {
       configureSparkMax(() -> encoder.setPosition(position));
     }
   }
@@ -397,8 +380,7 @@ public class SparkMaxSwerve extends SwerveMotor
   /**
    * REV Slots for PID configuration.
    */
-  enum SparkMAX_slotIdx
-  {
+  enum SparkMAX_slotIdx {
     /**
      * Slot 1, used for position PID's.
      */

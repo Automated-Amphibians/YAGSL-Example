@@ -17,15 +17,12 @@ import swervelib.SwerveController;
 /**
  * An example command that uses an example subsystem.
  */
-public class TeleopDrive extends CommandBase
-{
-
+public class TeleopDrive extends CommandBase {
   private final SwerveSubsystem  swerve;
   private final DoubleSupplier   vX;
   private final DoubleSupplier   vY;
   private final DoubleSupplier   omega;
-  private final BooleanSupplier  driveMode;
-  private final boolean          isOpenLoop;
+  private final BooleanSupplier  driveMode;  
   private final SwerveController controller;
   private final Timer            timer    = new Timer();
   private final boolean          headingCorrection;
@@ -45,8 +42,7 @@ public class TeleopDrive extends CommandBase
     this.vX = vX;
     this.vY = vY;
     this.omega = omega;
-    this.driveMode = driveMode;
-    this.isOpenLoop = isOpenLoop;
+    this.driveMode = driveMode;    
     this.controller = swerve.getSwerveController();
     this.headingCorrection = headingCorrection;
     if (headingCorrection)
@@ -88,15 +84,14 @@ public class TeleopDrive extends CommandBase
       swerve.drive(
           SwerveController.getTranslation2d(correctedChassisSpeeds),
           correctedChassisSpeeds.omegaRadiansPerSecond,
-          driveMode.getAsBoolean(),
-          isOpenLoop);
+          driveMode.getAsBoolean());
       lastTime = timer.get();
     } else
     {
       // Drive using raw values.
       swerve.drive(new Translation2d(xVelocity * controller.config.maxSpeed, yVelocity * controller.config.maxSpeed),
                    angVelocity * controller.config.maxAngularVelocity,
-                   driveMode.getAsBoolean(), isOpenLoop);
+                   driveMode.getAsBoolean());
     }
   }
 

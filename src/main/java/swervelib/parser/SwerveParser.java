@@ -1,6 +1,5 @@
 package swervelib.parser;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.math.util.Units;
 import java.io.File;
@@ -17,9 +16,7 @@ import swervelib.parser.json.SwerveDriveJson;
 /**
  * Helper class used to parse the JSON directory with specified configuration options.
  */
-public class SwerveParser
-{
-
+public class SwerveParser { 
   /**
    * Module number mapped to the JSON name.
    */
@@ -51,33 +48,21 @@ public class SwerveParser
    * @param directory Directory with swerve configurations.
    * @throws IOException if a file doesn't exist.
    */
-  public SwerveParser(File directory) throws IOException
-  {
+  public SwerveParser(File directory) throws IOException {
     checkDirectory(directory);
-    swerveDriveJson =
-        new ObjectMapper()
-            .readValue(new File(directory, "swervedrive.json"), SwerveDriveJson.class);
-    controllerPropertiesJson =
-        new ObjectMapper()
-            .readValue(
-                new File(directory, "controllerproperties.json"), ControllerPropertiesJson.class);
-    pidfPropertiesJson =
-        new ObjectMapper()
-            .readValue(
-                new File(directory, "modules/pidfproperties.json"), PIDFPropertiesJson.class);
-    physicalPropertiesJson =
-        new ObjectMapper()
-            .readValue(
-                new File(directory, "modules/physicalproperties.json"),
-                PhysicalPropertiesJson.class);
+    swerveDriveJson = new ObjectMapper().readValue(new File(directory, "swervedrive.json"), SwerveDriveJson.class);
+    controllerPropertiesJson = new ObjectMapper().readValue(new File(directory, "controllerproperties.json"), ControllerPropertiesJson.class);
+    pidfPropertiesJson = new ObjectMapper().readValue(new File(directory, "modules/pidfproperties.json"), PIDFPropertiesJson.class);
+    physicalPropertiesJson = new ObjectMapper().readValue(new File(directory, "modules/physicalproperties.json"),PhysicalPropertiesJson.class);
     moduleJsons = new ModuleJson[swerveDriveJson.modules.length];
-    for (int i = 0; i < moduleJsons.length; i++)
-    {
+
+    for (int i = 0; i < moduleJsons.length; i++) {
       moduleConfigs.put(swerveDriveJson.modules[i], i);
       File moduleFile = new File(directory, "modules/" + swerveDriveJson.modules[i]);
       assert moduleFile.exists();
       moduleJsons[i] = new ObjectMapper().readValue(moduleFile, ModuleJson.class);
     }
+
   }
 
   /**
@@ -87,36 +72,17 @@ public class SwerveParser
    * @param driveConfiguration {@link SwerveDriveConfiguration} to pull from.
    * @return {@link SwerveModuleConfiguration} based on the file.
    */
-  public static SwerveModule getModuleConfigurationByName(
-      String name, SwerveDriveConfiguration driveConfiguration)
-  {
+  public static SwerveModule getModuleConfigurationByName(String name, SwerveDriveConfiguration driveConfiguration) {
     return driveConfiguration.modules[moduleConfigs.get(name + ".json")];
   }
 
-  /**
-   * Open JSON file.
-   *
-   * @param file JSON File to open.
-   * @return JsonNode of file.
-   */
-  private JsonNode openJson(File file)
-  {
-    try
-    {
-      return new ObjectMapper().readTree(file);
-    } catch (IOException e)
-    {
-      throw new RuntimeException(e);
-    }
-  }
 
   /**
    * Check directory structure.
    *
    * @param directory JSON Configuration Directory
    */
-  private void checkDirectory(File directory)
-  {
+  private void checkDirectory(File directory) {
     assert new File(directory, "swervedrive.json").exists();
     assert new File(directory, "controllerproperties.json").exists();
     assert new File(directory, "modules").exists() && new File(directory, "modules").isDirectory();
@@ -129,8 +95,7 @@ public class SwerveParser
    *
    * @return {@link SwerveDrive} instance.
    */
-  public SwerveDrive createSwerveDrive()
-  {
+  public SwerveDrive createSwerveDrive() {
     double maxSpeedMPS = Units.feetToMeters(swerveDriveJson.maxSpeed);
     SwerveModuleConfiguration[] moduleConfigurations =
         new SwerveModuleConfiguration[moduleJsons.length];
