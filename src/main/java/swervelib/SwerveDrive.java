@@ -688,11 +688,7 @@ public class SwerveDrive
       if (SwerveDriveTelemetry.verbosity.ordinal() >= TelemetryVerbosity.HIGH.ordinal()) {
         Pose2d[] modulePoses = getSwerveModulePoses(swerveDrivePoseEstimator.getEstimatedPosition());
         if (SwerveDriveTelemetry.isSimulation) {
-          simIMU.updateOdometry(
-              kinematics,
-              getStates(),
-              modulePoses,
-              field);
+          simIMU.updateOdometry(kinematics, getStates(), modulePoses, field);
         }
 
         ChassisSpeeds measuredChassisSpeeds = getRobotVelocity();
@@ -711,10 +707,8 @@ public class SwerveDrive
         SwerveModuleState moduleState = module.getState();
         sumVelocity += Math.abs(moduleState.speedMetersPerSecond);
         if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH) {
-          SmartDashboard.putNumber(
-              "Module[" + module.configuration.name + "] Relative Encoder", module.getRelativePosition());
-          SmartDashboard.putNumber(
-              "Module[" + module.configuration.name + "] Absolute Encoder", module.getAbsolutePosition());
+          SmartDashboard.putNumber("Module[" + module.configuration.name + "] Relative Encoder", module.getRelativePosition());
+          SmartDashboard.putNumber("Module[" + module.configuration.name + "] Absolute Encoder", module.getAbsolutePosition());
         }
         if (SwerveDriveTelemetry.verbosity.ordinal() >= TelemetryVerbosity.HIGH.ordinal()) {
           SwerveDriveTelemetry.measuredStates[module.moduleNumber * 2] = moduleState.angle.getDegrees();
@@ -722,8 +716,7 @@ public class SwerveDrive
         }
       }
 
-      // If the robot isn't moving synchronize the encoders every 100ms (Inspired by democrat's SDS
-      // lib)
+      // If the robot isn't moving synchronize the encoders every 100ms (Inspired by democrat's SDS lib)
       // To ensure that everytime we initialize it works.
       if (sumVelocity <= .01 && ++moduleSynchronizationCounter > 5) {
         synchronizeModuleEncoders();

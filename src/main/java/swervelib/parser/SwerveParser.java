@@ -24,23 +24,23 @@ public class SwerveParser {
   /**
    * Parsed swervedrive.json
    */
-  public static        SwerveDriveJson          swerveDriveJson;
+  public static SwerveDriveJson swerveDriveJson;
   /**
    * Parsed controllerproperties.json
    */
-  public static        ControllerPropertiesJson controllerPropertiesJson;
+  public static ControllerPropertiesJson controllerPropertiesJson;
   /**
    * Parsed modules/pidfproperties.json
    */
-  public static        PIDFPropertiesJson       pidfPropertiesJson;
+  public static PIDFPropertiesJson pidfPropertiesJson;
   /**
    * Parsed modules/physicalproperties.json
    */
-  public static        PhysicalPropertiesJson   physicalPropertiesJson;
+  public static PhysicalPropertiesJson physicalPropertiesJson;
   /**
    * Array holding the module jsons given in {@link SwerveDriveJson}.
    */
-  public static        ModuleJson[]             moduleJsons;
+  public static ModuleJson[] moduleJsons;
 
   /**
    * Construct a swerve parser. Will throw an error if there is a missing file.
@@ -99,8 +99,7 @@ public class SwerveParser {
     double maxSpeedMPS = Units.feetToMeters(swerveDriveJson.maxSpeed);
     SwerveModuleConfiguration[] moduleConfigurations =
         new SwerveModuleConfiguration[moduleJsons.length];
-    for (int i = 0; i < moduleConfigurations.length; i++)
-    {
+    for (int i = 0; i < moduleConfigurations.length; i++) {
       ModuleJson module = moduleJsons[i];
       moduleConfigurations[i] =
           module.createModuleConfiguration(

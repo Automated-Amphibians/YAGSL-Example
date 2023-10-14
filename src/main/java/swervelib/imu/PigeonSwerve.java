@@ -10,25 +10,15 @@ import java.util.Optional;
 /**
  * SwerveIMU interface for the Pigeon.
  */
-public class PigeonSwerve extends SwerveIMU
-{
-
-  /**
-   * Pigeon v1 IMU device.
-   */
-  WPI_PigeonIMU imu;
-  /**
-   * Offset for the Pigeon.
-   */
-  private Rotation3d offset = new Rotation3d();
+public class PigeonSwerve extends SwerveIMU {
+  private WPI_PigeonIMU imu;
 
   /**
    * Generate the SwerveIMU for pigeon.
    *
    * @param canid CAN ID for the pigeon, does not support CANBus.
    */
-  public PigeonSwerve(int canid)
-  {
+  public PigeonSwerve(int canid) {
     imu = new WPI_PigeonIMU(canid);
     offset = new Rotation3d();
     SmartDashboard.putData(imu);
@@ -38,8 +28,7 @@ public class PigeonSwerve extends SwerveIMU
    * Reset IMU to factory default.
    */
   @Override
-  public void factoryDefault()
-  {
+  public void factoryDefault() {
     imu.configFactoryDefault();
   }
 
@@ -47,19 +36,8 @@ public class PigeonSwerve extends SwerveIMU
    * Clear sticky faults on IMU.
    */
   @Override
-  public void clearStickyFaults()
-  {
+  public void clearStickyFaults() {
     imu.clearStickyFaults();
-  }
-
-  /**
-   * Set the gyro offset.
-   *
-   * @param offset gyro offset as a {@link Rotation3d}.
-   */
-  public void setOffset(Rotation3d offset)
-  {
-    this.offset = offset;
   }
 
   /**
@@ -68,8 +46,7 @@ public class PigeonSwerve extends SwerveIMU
    * @return {@link Rotation3d} from the IMU.
    */
   @Override
-  public Rotation3d getRawRotation3d()
-  {
+  public Rotation3d getRawRotation3d() {
     double[] wxyz = new double[4];
     imu.get6dQuaternion(wxyz);
     return new Rotation3d(new Quaternion(wxyz[0], wxyz[1], wxyz[2], wxyz[3]));
@@ -81,8 +58,7 @@ public class PigeonSwerve extends SwerveIMU
    * @return {@link Rotation3d} from the IMU.
    */
   @Override
-  public Rotation3d getRotation3d()
-  {
+  public Rotation3d getRotation3d() {
     return getRawRotation3d().minus(offset);
   }
 
@@ -93,8 +69,7 @@ public class PigeonSwerve extends SwerveIMU
    * @return {@link Translation3d} of the acceleration as an {@link Optional}.
    */
   @Override
-  public Optional<Translation3d> getAccel()
-  {
+  public Optional<Translation3d> getAccel() {
     short[] initial = new short[3];
     imu.getBiasedAccelerometer(initial);
     return Optional.of(new Translation3d(initial[0], initial[1], initial[2]).times(9.81 / 16384.0));
@@ -106,8 +81,7 @@ public class PigeonSwerve extends SwerveIMU
    * @return IMU object.
    */
   @Override
-  public Object getIMU()
-  {
+  public Object getIMU() {
     return imu;
   }
 }

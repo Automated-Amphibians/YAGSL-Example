@@ -18,10 +18,11 @@ public abstract class SwerveMotor
    */
   protected boolean isDriveMotor;
 
+
   /**
    * Configure the factory defaults.
    */
-  public abstract void factoryDefaults();
+  public abstract void setFactoryDefaults();
 
   /**
    * Clear the sticky faults on the motor controller.

@@ -7,8 +7,9 @@ import java.util.Optional;
 /**
  * Swerve IMU abstraction to define a standard interface with a swerve drive.
  */
-public abstract class SwerveIMU
-{
+public abstract class SwerveIMU {
+
+  protected Rotation3d offset = new Rotation3d();
 
   /**
    * Reset IMU to factory default.
@@ -18,14 +19,7 @@ public abstract class SwerveIMU
   /**
    * Clear sticky faults on IMU.
    */
-  public abstract void clearStickyFaults();
-
-  /**
-   * Set the gyro offset.
-   *
-   * @param offset gyro offset as a {@link Rotation3d}.
-   */
-  public abstract void setOffset(Rotation3d offset);
+  public abstract void clearStickyFaults();  
 
   /**
    * Fetch the {@link Rotation3d} from the IMU without any zeroing. Robot relative.
@@ -55,4 +49,13 @@ public abstract class SwerveIMU
    * @return IMU object.
    */
   public abstract Object getIMU();
+
+   /**
+   * Set the gyro offset.
+   *
+   * @param offset gyro offset as a {@link Rotation3d}.
+   */
+  public void setOffset(Rotation3d offset) {
+    this.offset = offset;
+  }
 }

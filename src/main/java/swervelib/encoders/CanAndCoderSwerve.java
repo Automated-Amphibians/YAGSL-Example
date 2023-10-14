@@ -5,16 +5,9 @@ import com.reduxrobotics.sensors.canandcoder.CANandcoder;
 /**
  * HELIUM {@link CANandcoder} from ReduxRobotics absolute encoder, attached through the CAN bus.
  */
-public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
-{
+public class CanAndCoderSwerve extends SwerveAbsoluteEncoder {
 
-  /**
-   * The {@link CANandcoder} representing the CANandCoder on the CAN bus.
-   */
   public  CANandcoder encoder;
-  /**
-   * Inversion state of the encoder.
-   */
   private boolean     inverted = false;
 
   /**
@@ -22,8 +15,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    *
    * @param canid The CAN ID whenever the CANandCoder is operating on the CANBus.
    */
-  public CanAndCoderSwerve(int canid)
-  {
+  public CanAndCoderSwerve(int canid) {
     encoder = new CANandcoder(canid);
   }
 
@@ -31,8 +23,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    * Reset the encoder to factory defaults.
    */
   @Override
-  public void factoryDefault()
-  {
+  public void factoryDefault() {
     encoder.resetFactoryDefaults(false);
   }
 
@@ -40,8 +31,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    * Clear sticky faults on the encoder.
    */
   @Override
-  public void clearStickyFaults()
-  {
+  public void clearStickyFaults() {
     encoder.clearStickyFaults();
   }
 
@@ -51,8 +41,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    * @param inverted Whether the encoder is inverted.
    */
   @Override
-  public void configure(boolean inverted)
-  {
+  public void configure(boolean inverted) {
     this.inverted = inverted;
   }
 
@@ -62,8 +51,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    * @return Absolute position in degrees from [0, 360).
    */
   @Override
-  public double getAbsolutePosition()
-  {
+  public double getAbsolutePosition() {
     return (inverted ? -1.0 : 1.0) * encoder.getPosition() * 360;
   }
 
@@ -73,8 +61,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    * @return Absolute encoder object.
    */
   @Override
-  public Object getAbsoluteEncoder()
-  {
+  public Object getAbsoluteEncoder() {
     return encoder;
   }
 }

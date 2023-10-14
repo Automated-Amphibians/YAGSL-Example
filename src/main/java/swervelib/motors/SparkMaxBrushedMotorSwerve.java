@@ -21,37 +21,12 @@ import swervelib.parser.PIDFConfig;
  */
 public class SparkMaxBrushedMotorSwerve extends SwerveMotor {
 
-  /**
-   * SparkMAX Instance.
-   */
   public CANSparkMax motor;
-
-  /**
-   * Absolute encoder attached to the SparkMax (if exists)
-   */
   public  AbsoluteEncoder       absoluteEncoder;
-  /**
-   * Integrated encoder.
-   */
   public  RelativeEncoder       encoder;
-  /**
-   * Closed-loop PID controller.
-   */
-  public  SparkMaxPIDController pid;
-  /**
-   * Factory default already occurred.
-   */
-  private boolean               factoryDefaultOccurred = false;
+  public  SparkMaxPIDController pid;  
+  
 
-  /**
-   * Initialize the swerve motor.
-   *
-   * @param motor                  The SwerveMotor as a SparkMax object.
-   * @param isDriveMotor           Is the motor being initialized a drive motor?
-   * @param encoderType            {@link Type} of encoder to use for the {@link CANSparkMax} device.
-   * @param countsPerRevolution    The number of encoder pulses for the {@link Type} encoder per revolution.
-   * @param useDataPortQuadEncoder Use the encoder attached to the data port of the spark max for a quadrature encoder.
-   */
   public SparkMaxBrushedMotorSwerve(CANSparkMax motor, boolean isDriveMotor, Type encoderType, int countsPerRevolution, boolean useDataPortQuadEncoder) {
     // Drive motors **MUST** have an encoder attached.
     if (isDriveMotor && encoderType == Type.kNoSensor) {
@@ -67,7 +42,7 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor {
     this.motor = motor;
     this.isDriveMotor = isDriveMotor;
 
-    factoryDefaults();
+    setFactoryDefaults();
     clearStickyFaults();
 
     // Get the onboard PID controller.
@@ -169,7 +144,7 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor {
    * Configure the factory defaults.
    */
   @Override
-  public void factoryDefaults() {
+  public void setFactoryDefaults() {
     if (!factoryDefaultOccurred) {
       configureSparkMax(motor::restoreFactoryDefaults);
       factoryDefaultOccurred = true;
@@ -275,50 +250,26 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor {
     //  https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
   }
 
-  /**
-   * Set the idle mode.
-   *
-   * @param isBrakeMode Set the brake mode.
-   */
   @Override
   public void setMotorBrake(boolean isBrakeMode) {
     configureSparkMax(() -> motor.setIdleMode(isBrakeMode ? IdleMode.kBrake : IdleMode.kCoast));
   }
 
-  /**
-   * Set the motor to be inverted.
-   *
-   * @param inverted State of inversion.
-   */
   @Override
   public void setInverted(boolean inverted) {
     motor.setInverted(inverted);
   }
 
-  /**
-   * Save the configurations from flash to EEPROM.
-   */
   @Override
   public void burnFlash() {
     configureSparkMax(() -> motor.burnFlash());
   }
 
-  /**
-   * Set the percentage output.
-   *
-   * @param percentOutput percent out for the motor controller.
-   */
   @Override
   public void set(double percentOutput) {
     motor.set(percentOutput);
   }
 
-  /**
-   * Set the closed loop PID controller reference point.
-   *
-   * @param setpoint    Setpoint in MPS or Angle in degrees.
-   * @param feedforward Feedforward in volt-meter-per-second or kV.
-   */
   @Override
   public void setReference(double setpoint, double feedforward) {
 //    int pidSlot =
@@ -333,43 +284,21 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor {
                      );
   }
 
-  /**
-   * Set the closed loop PID controller reference point.
-   *
-   * @param setpoint    Setpoint in meters per second or angle in degrees.
-   * @param feedforward Feedforward in volt-meter-per-second or kV.
-   * @param position    Only used on the angle motor, the position of the motor in degrees.
-   */
   @Override
   public void setReference(double setpoint, double feedforward, double position) {
     setReference(setpoint, feedforward);
   }
 
-  /**
-   * Get the velocity of the integrated encoder.
-   *
-   * @return velocity
-   */
   @Override
   public double getVelocity() {
     return absoluteEncoder == null ? encoder.getVelocity() : absoluteEncoder.getVelocity();
   }
 
-  /**
-   * Get the position of the integrated encoder.
-   *
-   * @return Position
-   */
   @Override
   public double getPosition() {
     return absoluteEncoder == null ? encoder.getPosition() : absoluteEncoder.getPosition();
   }
 
-  /**
-   * Set the integrated encoder position.
-   *
-   * @param position Integrated encoder position.
-   */
   @Override
   public void setPosition(double position) {
     if (absoluteEncoder == null)

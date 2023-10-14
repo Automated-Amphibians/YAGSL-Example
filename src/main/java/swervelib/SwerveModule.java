@@ -79,8 +79,8 @@ public class SwerveModule
     // Create motors from configuration and reset them to defaults.
     angleMotor = moduleConfiguration.angleMotor;
     driveMotor = moduleConfiguration.driveMotor;
-    angleMotor.factoryDefaults();
-    driveMotor.factoryDefaults();
+    angleMotor.setFactoryDefaults();
+    driveMotor.setFactoryDefaults();
 
     // Configure voltage comp, current limit, and ramp rate.
     angleMotor.setVoltageCompensation(configuration.physicalCharacteristics.optimalVoltage);
