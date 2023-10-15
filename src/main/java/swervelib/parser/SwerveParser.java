@@ -96,9 +96,10 @@ public class SwerveParser {
    * @return {@link SwerveDrive} instance.
    */
   public SwerveDrive createSwerveDrive() {
+    
     double maxSpeedMPS = Units.feetToMeters(swerveDriveJson.maxSpeed);
-    SwerveModuleConfiguration[] moduleConfigurations =
-        new SwerveModuleConfiguration[moduleJsons.length];
+    SwerveModuleConfiguration[] moduleConfigurations = new SwerveModuleConfiguration[moduleJsons.length];
+
     for (int i = 0; i < moduleConfigurations.length; i++) {
       ModuleJson module = moduleJsons[i];
       moduleConfigurations[i] =

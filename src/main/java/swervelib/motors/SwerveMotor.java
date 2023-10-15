@@ -17,7 +17,7 @@ public abstract class SwerveMotor
    * Whether the swerve motor is a drive motor.
    */
   protected boolean isDriveMotor;
-
+  protected boolean factoryDefaultOccurred = false;
 
   /**
    * Configure the factory defaults.
