@@ -10,34 +10,42 @@ public class SwerveModulePhysicalCharacteristics
    * Wheel diameter in meters.
    */
   public final double wheelDiameter;
+
   /**
    * Drive gear ratio. How many times the motor has to spin before the wheel makes a complete rotation.
    */
   public final double driveGearRatio;
+
   /**
    * Angle gear ratio. How many times the motor has to spin before the wheel makes a full rotation.
    */
   public final double angleGearRatio;
+
   /**
    * Drive motor encoder pulse per rotation. 1 if integrated encoder.
    */
   public final int    driveEncoderPulsePerRotation;
+
   /**
    * Angle motor encoder pulse per rotation. 1 for Neo encoder. 2048 for Falcons.
    */
   public final int    angleEncoderPulsePerRotation;
+
   /**
    * Optimal voltage of the robot.
    */
   public final double optimalVoltage;
+
   /**
    * Current limits for the Swerve Module.
    */
   public final int    driveMotorCurrentLimit, angleMotorCurrentLimit;
+
   /**
    * The time it takes for the motor to go from 0 to full throttle in seconds.
    */
   public final double driveMotorRampRate, angleMotorRampRate;
+
   /**
    * Wheel grip tape coefficient of friction on carpet, as described by the vendor.
    */
@@ -72,8 +80,7 @@ public class SwerveModulePhysicalCharacteristics
       double driveMotorRampRate,
       double angleMotorRampRate,
       int driveEncoderPulsePerRotation,
-      int angleEncoderPulsePerRotation)
-  {
+      int angleEncoderPulsePerRotation) {
     this.wheelGripCoefficientOfFriction = wheelGripCoefficientOfFriction;
     this.optimalVoltage = optimalVoltage;
 
@@ -111,8 +118,7 @@ public class SwerveModulePhysicalCharacteristics
       double driveMotorRampRate,
       double angleMotorRampRate,
       int driveEncoderPulsePerRotation,
-      int angleEncoderPulsePerRotation)
-  {
+      int angleEncoderPulsePerRotation) {
     this(
         driveGearRatio,
         angleGearRatio,
