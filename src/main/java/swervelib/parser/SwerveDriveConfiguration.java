@@ -14,23 +14,29 @@ public class SwerveDriveConfiguration
    * Swerve Module locations.
    */
   public Translation2d[] moduleLocationsMeters;
+
   /**
    * Swerve IMU
    */
-  public SwerveIMU       imu;
+  public SwerveIMU imu;
+
   /**
    * Invert the imu measurements.
    */
-  public boolean         invertedIMU = false;
+  public boolean invertedIMU = false;
+
   /**
    * Max module speed in meters per second.
    */
-  public double          maxSpeed, attainableMaxTranslationalSpeedMetersPerSecond,
+  public double maxSpeed, 
+      attainableMaxTranslationalSpeedMetersPerSecond,
       attainableMaxRotationalVelocityRadiansPerSecond;
+
   /**
    * Number of modules on the robot.
    */
-  public int            moduleCount;
+  public int moduleCount;
+  
   /**
    * Swerve Modules.
    */

@@ -17,30 +17,37 @@ import swervelib.parser.json.SwerveDriveJson;
  * Helper class used to parse the JSON directory with specified configuration options.
  */
 public class SwerveParser { 
+
   /**
    * Module number mapped to the JSON name.
    */
   private static final HashMap<String, Integer> moduleConfigs = new HashMap<>();
+
   /**
    * Parsed swervedrive.json
    */
   public static SwerveDriveJson swerveDriveJson;
+
   /**
    * Parsed controllerproperties.json
    */
   public static ControllerPropertiesJson controllerPropertiesJson;
+
   /**
    * Parsed modules/pidfproperties.json
    */
   public static PIDFPropertiesJson pidfPropertiesJson;
+
   /**
    * Parsed modules/physicalproperties.json
    */
   public static PhysicalPropertiesJson physicalPropertiesJson;
+
   /**
    * Array holding the module jsons given in {@link SwerveDriveJson}.
    */
   public static ModuleJson[] moduleJsons;
+  
 
   /**
    * Construct a swerve parser. Will throw an error if there is a missing file.

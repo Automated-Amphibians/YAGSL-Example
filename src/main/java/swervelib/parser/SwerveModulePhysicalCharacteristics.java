@@ -24,12 +24,12 @@ public class SwerveModulePhysicalCharacteristics
   /**
    * Drive motor encoder pulse per rotation. 1 if integrated encoder.
    */
-  public final int    driveEncoderPulsePerRotation;
+  public final int driveEncoderPulsePerRotation;
 
   /**
    * Angle motor encoder pulse per rotation. 1 for Neo encoder. 2048 for Falcons.
    */
-  public final int    angleEncoderPulsePerRotation;
+  public final int angleEncoderPulsePerRotation;
 
   /**
    * Optimal voltage of the robot.
@@ -39,7 +39,7 @@ public class SwerveModulePhysicalCharacteristics
   /**
    * Current limits for the Swerve Module.
    */
-  public final int    driveMotorCurrentLimit, angleMotorCurrentLimit;
+  public final int driveMotorCurrentLimit, angleMotorCurrentLimit;
 
   /**
    * The time it takes for the motor to go from 0 to full throttle in seconds.

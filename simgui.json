@@ -1,7 +1,17 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "Pigeon 2[13]": {
+        "header": {
+          "open": true
+        }
+      },
       "SPARK MAX [1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [4]": {
         "header": {
           "open": true
         }
@@ -53,6 +63,11 @@
           "arrowWeight": 3.0,
           "style": "Hidden"
         },
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pigeon 2 [13]": {
         "window": {
           "visible": true
         }

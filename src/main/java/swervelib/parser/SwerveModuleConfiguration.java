@@ -17,55 +17,67 @@ public class SwerveModuleConfiguration
   /**
    * Angle offset in degrees for the Swerve Module.
    */
-  public final double                              angleOffset;
+  public final double angleOffset;
+
   /**
    * Whether the absolute encoder is inverted.
    */
-  public final boolean                             absoluteEncoderInverted;
+  public final boolean absoluteEncoderInverted;
+
   /**
    * State of inversion of the drive motor.
    */
-  public final boolean                             driveMotorInverted;
+  public final boolean driveMotorInverted;
+
   /**
    * State of inversion of the angle motor.
    */
-  public final boolean                             angleMotorInverted;
+  public final boolean angleMotorInverted;
+
   /**
    * Maximum robot speed in meters per second.
    */
-  public       double                              maxSpeed;
+  public double maxSpeed;
+
   /**
    * PIDF configuration options for the angle motor closed-loop PID controller.
    */
-  public       PIDFConfig                          anglePIDF;
+  public PIDFConfig anglePIDF;
+
   /**
    * PIDF configuration options for the drive motor closed-loop PID controller.
    */
-  public       PIDFConfig                          velocityPIDF;
+  public PIDFConfig velocityPIDF;
+
   /**
    * The integrated encoder pulse per revolution.
    */
-  public       double                              angleMotorEncoderPulsePerRevolution = 0;
+  public double angleMotorEncoderPulsePerRevolution = 0;
+
   /**
    * Swerve module location relative to the robot.
    */
-  public       Translation2d                       moduleLocation;
+  public Translation2d moduleLocation;
+
   /**
    * Physical characteristics of the swerve module.
    */
-  public       SwerveModulePhysicalCharacteristics physicalCharacteristics;
+  public SwerveModulePhysicalCharacteristics physicalCharacteristics;
+
   /**
    * The drive motor and angle motor of this swerve module.
    */
-  public       SwerveMotor                         driveMotor, angleMotor;
+  public SwerveMotor driveMotor, angleMotor;
+
   /**
    * The Absolute Encoder for the swerve module.
    */
   public SwerveAbsoluteEncoder absoluteEncoder;
+
   /**
    * Name for the swerve module for telemetry.
    */
-  public String                name;
+  public String name;
 
   /**
    * Construct a configuration object for swerve modules.
@@ -101,8 +113,7 @@ public class SwerveModuleConfiguration
       boolean driveMotorInverted,
       boolean angleMotorInverted,
       double angleMotorEncoderPulsePerRevolution,
-      String name)
-  {
+      String name) {
     this.driveMotor = driveMotor;
     this.angleMotor = angleMotor;
     this.absoluteEncoder = absoluteEncoder;
@@ -146,8 +157,7 @@ public class SwerveModuleConfiguration
       PIDFConfig velocityPIDF,
       double maxSpeed,
       SwerveModulePhysicalCharacteristics physicalCharacteristics,
-      String name)
-  {
+      String name) {
     this(
         driveMotor,
         angleMotor,
@@ -171,13 +181,10 @@ public class SwerveModuleConfiguration
    *
    * @return Drive feedforward for drive motor on a swerve module.
    */
-  public SimpleMotorFeedforward createDriveFeedforward()
-  {
+  public SimpleMotorFeedforward createDriveFeedforward() {
     double kv = physicalCharacteristics.optimalVoltage / maxSpeed;
     /// ^ Volt-seconds per meter (max voltage divided by max speed)
-    double ka =
-        physicalCharacteristics.optimalVoltage
-        / calculateMaxAcceleration(physicalCharacteristics.wheelGripCoefficientOfFriction);
+    double ka = physicalCharacteristics.optimalVoltage / calculateMaxAcceleration(physicalCharacteristics.wheelGripCoefficientOfFriction);
     /// ^ Volt-seconds^2 per meter (max voltage divided by max accel)
     return new SimpleMotorFeedforward(0, kv, ka);
   }
@@ -188,15 +195,8 @@ public class SwerveModuleConfiguration
    * @param isDriveMotor For the drive motor.
    * @return Position encoder conversion factor.
    */
-  public double getPositionEncoderConversion(boolean isDriveMotor)
-  {
-    return isDriveMotor
-           ? calculateMetersPerRotation(
-        physicalCharacteristics.wheelDiameter,
-        physicalCharacteristics.driveGearRatio,
-        physicalCharacteristics.driveEncoderPulsePerRotation)
-           : calculateDegreesPerSteeringRotation(
-               physicalCharacteristics.angleGearRatio,
-               angleMotorEncoderPulsePerRevolution);
+  public double getPositionEncoderConversion(boolean isDriveMotor) {
+    return isDriveMotor ? calculateMetersPerRotation(physicalCharacteristics.wheelDiameter, physicalCharacteristics.driveGearRatio, physicalCharacteristics.driveEncoderPulsePerRotation)
+                        : calculateDegreesPerSteeringRotation(physicalCharacteristics.angleGearRatio, angleMotorEncoderPulsePerRevolution);
   }
 }
