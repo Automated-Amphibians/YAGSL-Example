@@ -13,17 +13,18 @@ import java.util.Optional;
 /**
  * Simulation for {@link swervelib.SwerveDrive} IMU.
  */
-public class SwerveIMUSimulation
-{
+public class SwerveIMUSimulation {
 
   /**
    * Main timer to control movement estimations.
    */
   private final Timer  timer;
+
   /**
    * The last time the timer was read, used to determine position changes.
    */
   private       double lastTime;
+
   /**
    * Heading of the robot.
    */
@@ -32,8 +33,7 @@ public class SwerveIMUSimulation
   /**
    * Create the swerve drive IMU simulation.
    */
-  public SwerveIMUSimulation()
-  {
+  public SwerveIMUSimulation() {
     timer = new Timer();
     timer.start();
     lastTime = timer.get();
@@ -44,8 +44,7 @@ public class SwerveIMUSimulation
    *
    * @return {@link Rotation2d} estimation of the robot.
    */
-  public Rotation2d getYaw()
-  {
+  public Rotation2d getYaw() {
     return new Rotation2d(angle);
   }
 
@@ -54,8 +53,7 @@ public class SwerveIMUSimulation
    *
    * @return Pitch of the robot as {@link Rotation2d}.
    */
-  public Rotation2d getPitch()
-  {
+  public Rotation2d getPitch() {
     return new Rotation2d();
   }
 
@@ -64,8 +62,7 @@ public class SwerveIMUSimulation
    *
    * @return Roll of the robot as {@link Rotation2d}.
    */
-  public Rotation2d getRoll()
-  {
+  public Rotation2d getRoll() {
     return new Rotation2d();
   }
 
@@ -74,8 +71,7 @@ public class SwerveIMUSimulation
    *
    * @return The heading as a {@link Rotation3d} angle
    */
-  public Rotation3d getGyroRotation3d()
-  {
+  public Rotation3d getGyroRotation3d() {
     return new Rotation3d(0, 0, angle);
   }
 
@@ -84,8 +80,7 @@ public class SwerveIMUSimulation
    *
    * @return {@link Translation3d} of the acceleration as an {@link Optional}.
    */
-  public Optional<Translation3d> getAccel()
-  {
+  public Optional<Translation3d> getAccel() {
     return Optional.empty();
   }
 
@@ -102,8 +97,7 @@ public class SwerveIMUSimulation
       SwerveDriveKinematics kinematics,
       SwerveModuleState[] states,
       Pose2d[] modulePoses,
-      Field2d field)
-  {
+      Field2d field) {
 
     angle += kinematics.toChassisSpeeds(states).omegaRadiansPerSecond * (timer.get() - lastTime);
     lastTime = timer.get();
@@ -115,8 +109,7 @@ public class SwerveIMUSimulation
    *
    * @param angle Angle of the robot in radians.
    */
-  public void setAngle(double angle)
-  {
+  public void setAngle(double angle) {
     this.angle = angle;
   }
 }

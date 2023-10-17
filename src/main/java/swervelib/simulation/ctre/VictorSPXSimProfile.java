@@ -8,8 +8,7 @@ import swervelib.simulation.ctre.PhysicsSim.SimProfile;
 /**
  * Holds information about a simulated VictorSPX.
  */
-class VictorSPXSimProfile extends SimProfile
-{
+class VictorSPXSimProfile extends SimProfile {
 
   public final VictorSPX _victor;
 
@@ -18,8 +17,7 @@ class VictorSPXSimProfile extends SimProfile
    *
    * @param victor The VictorSPX device
    */
-  public VictorSPXSimProfile(final VictorSPX victor)
-  {
+  public VictorSPXSimProfile(final VictorSPX victor) {
     this._victor = victor;
   }
 
@@ -30,8 +28,7 @@ class VictorSPXSimProfile extends SimProfile
    * our products in simulation using our examples out of the box. Users may modify this to utilize more accurate
    * physics simulation.
    */
-  public void run()
-  {
+  public void run() {
     // final double period = getPeriod();
 
     // Device voltage simulation

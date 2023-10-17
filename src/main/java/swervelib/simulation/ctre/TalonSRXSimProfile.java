@@ -35,8 +35,7 @@ class TalonSRXSimProfile extends SimProfile
       final TalonSRX talon,
       final double accelToFullTime,
       final double fullVel,
-      final boolean sensorPhase)
-  {
+      final boolean sensorPhase) {
     this._talon = talon;
     this._accelToFullTime = accelToFullTime;
     this._fullVel = fullVel;
@@ -50,29 +49,24 @@ class TalonSRXSimProfile extends SimProfile
    * our products in simulation using our examples out of the box. Users may modify this to utilize more accurate
    * physics simulation.
    */
-  public void run()
-  {
+  public void run() {
     final double period      = getPeriod();
     final double accelAmount = _fullVel / _accelToFullTime * period / 1000;
 
     /// DEVICE SPEED SIMULATION
 
     double outPerc = _talon.getSimCollection().getMotorOutputLeadVoltage() / 12;
-    if (_sensorPhase)
-    {
+    if (_sensorPhase) {
       outPerc *= -1;
     }
     // Calculate theoretical velocity with some randomness
     double theoreticalVel = outPerc * _fullVel * random(0.95, 1);
     // Simulate motor load
-    if (theoreticalVel > _vel + accelAmount)
-    {
+    if (theoreticalVel > _vel + accelAmount) {
       _vel += accelAmount;
-    } else if (theoreticalVel < _vel - accelAmount)
-    {
+    } else if (theoreticalVel < _vel - accelAmount) {
       _vel -= accelAmount;
-    } else
-    {
+    } else {
       _vel += 0.9 * (theoreticalVel - _vel);
     }
     // _pos += _vel * period / 100;

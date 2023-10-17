@@ -46,74 +46,90 @@ public class SwerveDrive
   /**
    * Swerve Kinematics object.
    */
-  public final  SwerveDriveKinematics    kinematics;
+  public final SwerveDriveKinematics kinematics;
+  
   /**
    * Swerve drive configuration.
    */
-  public final  SwerveDriveConfiguration swerveDriveConfiguration;
+  public final SwerveDriveConfiguration swerveDriveConfiguration;
+
   /**
    * Swerve odometry.
    */
-  public final  SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  public final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+
   /**
    * Swerve modules.
    */
-  private final SwerveModule[]           swerveModules;
+  private final SwerveModule[] swerveModules;
+
   /**
    * WPILib {@link Notifier} to keep odometry up to date.
    */
-  private final Notifier                 odometryThread;
+  private final Notifier odometryThread;
+
   /**
    * Odometry lock to ensure thread safety.
    */
-  private final Lock                     odometryLock                 = new ReentrantLock();
+  private final Lock odometryLock = new ReentrantLock();
+
   /**
    * Field object.
    */
-  public        Field2d                  field                        = new Field2d();
+  public Field2d field = new Field2d();
+
   /**
    * Swerve controller for controlling heading of the robot.
    */
-  public        SwerveController         swerveController;
+  public SwerveController swerveController;
+
   /**
    * Trustworthiness of the internal model of how motors should be moving Measured in expected standard deviation
    * (meters of position and degrees of rotation)
    */
-  public        Matrix<N3, N1>           stateStdDevs                 = VecBuilder.fill(0.1, 0.1, 0.1);
+  public Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+
   /**
    * Trustworthiness of the vision system Measured in expected standard deviation (meters of position and degrees of
    * rotation)
    */
-  public        Matrix<N3, N1>           visionMeasurementStdDevs     = VecBuilder.fill(0.9, 0.9, 0.9);
+  public Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, 0.9);
+
   /**
    * Invert odometry readings of drive motor positions, used as a patch for debugging currently.
    */
-  public        boolean                  invertOdometry               = false;
+  public boolean invertOdometry = false;
+
   /**
    * Correct chassis velocity in {@link SwerveDrive#drive(Translation2d, double, boolean, boolean)} using 254's
    * correction.
    */
-  public        boolean                  chassisVelocityCorrection    = true;
+  public boolean chassisVelocityCorrection = true;
+
   /**
    * Whether to correct heading when driving translationally. Set to true to enable.
    */
-  public        boolean                  headingCorrection            = false;
+  public boolean headingCorrection = false;
+
   /**
    * Swerve IMU device for sensing the heading of the robot.
    */
-  private       SwerveIMU                imu;
+  private SwerveIMU imu;
+
   /**
    * Simulation of the swerve drive.
    */
-  private       SwerveIMUSimulation      simIMU;
+  private SwerveIMUSimulation simIMU;
+
   /**
    * Counter to synchronize the modules relative encoder with absolute encoder when not moving.
    */
-  private       int                      moduleSynchronizationCounter = 0;
+  private int moduleSynchronizationCounter = 0;
+  
   /**
    * The last heading set in radians.
    */
-  private       double                   lastHeadingRadians           = 0;
+  private double lastHeadingRadians = 0;
 
   /**
    * Creates a new swerve drivebase subsystem. Robot is controlled via the {@link SwerveDrive#drive} method, or via the

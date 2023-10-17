@@ -48,8 +48,7 @@ public class SwerveDriveConfiguration
       SwerveModuleConfiguration[] moduleConfigs,
       SwerveIMU swerveIMU,
       double maxSpeed,
-      boolean invertedIMU)
-  {
+      boolean invertedIMU) {
     this.moduleCount = moduleConfigs.length;
     this.imu = swerveIMU;
     this.maxSpeed = maxSpeed;
@@ -58,8 +57,7 @@ public class SwerveDriveConfiguration
     this.invertedIMU = invertedIMU;
     this.modules = createModules(moduleConfigs);
     this.moduleLocationsMeters = new Translation2d[moduleConfigs.length];
-    for (SwerveModule module : modules)
-    {
+    for (SwerveModule module : modules) {
       this.moduleLocationsMeters[module.moduleNumber] = module.configuration.moduleLocation;
     }
   }
@@ -70,11 +68,9 @@ public class SwerveDriveConfiguration
    * @param swerves Swerve constants.
    * @return Swerve Modules.
    */
-  public SwerveModule[] createModules(SwerveModuleConfiguration[] swerves)
-  {
+  public SwerveModule[] createModules(SwerveModuleConfiguration[] swerves) {
     SwerveModule[] modArr = new SwerveModule[swerves.length];
-    for (int i = 0; i < swerves.length; i++)
-    {
+    for (int i = 0; i < swerves.length; i++) {
       modArr[i] = new SwerveModule(i, swerves[i]);
     }
     return modArr;

@@ -8,8 +8,7 @@ import java.util.ArrayList;
 /**
  * Manages physics simulation for CTRE products.
  */
-public class PhysicsSim
-{
+public class PhysicsSim {
 
   private static PhysicsSim            sim;
   private final  ArrayList<SimProfile> _simProfiles = new ArrayList<SimProfile>();
@@ -19,24 +18,20 @@ public class PhysicsSim
    *
    * @return {@link PhysicsSim} instance.
    */
-  public static PhysicsSim getInstance()
-  {
-    if (sim == null)
-    {
+  public static PhysicsSim getInstance() {
+    if (sim == null) {
       sim = new PhysicsSim();
     }
     return sim;
   }
 
   /* scales a random domain of [0, 2pi] to [min, max] while prioritizing the peaks */
-  static double random(double min, double max)
-  {
+  static double random(double min, double max) {
     return (max - min) / 2 * Math.sin((Math.random() % 2 * Math.PI))
            + (max + min) / 2;
   }
 
-  static double random(double max)
-  {
+  static double random(double max) {
     return random(0, max);
   }
 
@@ -47,8 +42,7 @@ public class PhysicsSim
    * @param accelToFullTime The time the motor takes to accelerate from 0 to full, in seconds
    * @param fullVel         The maximum motor velocity, in ticks per 100ms
    */
-  public void addTalonSRX(TalonSRX talon, final double accelToFullTime, final double fullVel)
-  {
+  public void addTalonSRX(TalonSRX talon, final double accelToFullTime, final double fullVel) {
     addTalonSRX(talon, accelToFullTime, fullVel, false);
   }
 
@@ -64,10 +58,8 @@ public class PhysicsSim
       TalonSRX talon,
       final double accelToFullTime,
       final double fullVel,
-      final boolean sensorPhase)
-  {
-    if (talon != null)
-    {
+      final boolean sensorPhase) {
+    if (talon != null) {
       TalonSRXSimProfile simTalon =
           new TalonSRXSimProfile(talon, accelToFullTime, fullVel, sensorPhase);
       _simProfiles.add(simTalon);
@@ -81,8 +73,7 @@ public class PhysicsSim
    * @param accelToFullTime The time the motor takes to accelerate from 0 to full, in seconds
    * @param fullVel         The maximum motor velocity, in ticks per 100ms
    */
-  public void addTalonFX(TalonFX falcon, final double accelToFullTime, final double fullVel)
-  {
+  public void addTalonFX(TalonFX falcon, final double accelToFullTime, final double fullVel) {
     addTalonFX(falcon, accelToFullTime, fullVel, false);
   }
 
@@ -98,12 +89,9 @@ public class PhysicsSim
       TalonFX falcon,
       final double accelToFullTime,
       final double fullVel,
-      final boolean sensorPhase)
-  {
-    if (falcon != null)
-    {
-      TalonFXSimProfile simFalcon =
-          new TalonFXSimProfile(falcon, accelToFullTime, fullVel, sensorPhase);
+      final boolean sensorPhase) {
+    if (falcon != null) {
+      TalonFXSimProfile simFalcon = new TalonFXSimProfile(falcon, accelToFullTime, fullVel, sensorPhase);
       _simProfiles.add(simFalcon);
     }
   }
@@ -113,10 +101,8 @@ public class PhysicsSim
    *
    * @param victor The VictorSPX device
    */
-  public void addVictorSPX(VictorSPX victor)
-  {
-    if (victor != null)
-    {
+  public void addVictorSPX(VictorSPX victor) {
+    if (victor != null) {
       VictorSPXSimProfile simVictor = new VictorSPXSimProfile(victor);
       _simProfiles.add(simVictor);
     }
@@ -125,11 +111,9 @@ public class PhysicsSim
   /**
    * Runs the simulator: - enable the robot - simulate sensors
    */
-  public void run()
-  {
+  public void run() {
     // Simulate devices
-    for (SimProfile simProfile : _simProfiles)
-    {
+    for (SimProfile simProfile : _simProfiles) {
       simProfile.run();
     }
   }
@@ -137,27 +121,22 @@ public class PhysicsSim
   /**
    * Holds information about a simulated device.
    */
-  static class SimProfile
-  {
-
+  static class SimProfile {
     private long    _lastTime;
     private boolean _running = false;
 
     /**
      * Runs the simulation profile. Implemented by device-specific profiles.
      */
-    public void run()
-    {
+    public void run() {
     }
 
     /**
      * Returns the time since last call, in milliseconds.
      */
-    protected double getPeriod()
-    {
+    protected double getPeriod() {
       // set the start time if not yet running
-      if (!_running)
-      {
+      if (!_running) {
         _lastTime = System.nanoTime();
         _running = true;
       }
