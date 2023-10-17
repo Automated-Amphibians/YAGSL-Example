@@ -270,12 +270,10 @@ public class SwerveMath {
     SwerveModuleConfiguration configuration = modules[0].configuration;
     for (SwerveModule module : modules) {
       current = module.configuration.moduleLocation;
-      temp =
-          front
+      temp = front
           ? (target.getY() >= current.getY() ? current : target)
           : (target.getY() <= current.getY() ? current : target);
-      target =
-          left
+      target = left
           ? (target.getX() >= temp.getX() ? temp : target)
           : (target.getX() <= temp.getX() ? temp : target);
       configuration = current.equals(target) ? module.configuration : configuration;
