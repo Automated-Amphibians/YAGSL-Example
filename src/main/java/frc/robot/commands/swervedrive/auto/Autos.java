@@ -107,25 +107,20 @@ public final class Autos
    * @return {@link FollowTrajectory} command. May return null if cannot load field.
    */
   public static CommandBase driveToAprilTag(SwerveSubsystem swerve, int id, Rotation2d rotation,
-                                            Rotation2d holonomicRotation, Translation2d offset)
-  {
-    if (aprilTagField == null)
-    {
-      try
-      {
-        aprilTagField = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
-      } catch (Exception ignored)
-      {
-        return null;
+                                            Rotation2d holonomicRotation, Translation2d offset) {
+    if (aprilTagField == null) {
+      try {
+          aprilTagField = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+      } catch (Exception ignored) {
+          return null;
       }
     }
-    PathPlannerTrajectory path = PathPlanner.generatePath(new PathConstraints(4, 3), false,
-                                                          PathPoint.fromCurrentHolonomicState(swerve.getPose(),
-                                                                                              swerve.getRobotVelocity()),
-                                                          new PathPoint(aprilTagField.getTagPose(id).get()
-                                                                                     .getTranslation()
-                                                                                     .toTranslation2d().plus(offset),
-                                                                        rotation, holonomicRotation));
+
+    PathConstraints pathConstraints = new PathConstraints(4, 3);
+    PathPoint pathPointfromCurrentHolonomicState = PathPoint.fromCurrentHolonomicState(swerve.getPose(), swerve.getRobotVelocity());
+    PathPoint pathPoint = new PathPoint(aprilTagField.getTagPose(id).get().getTranslation().toTranslation2d().plus(offset), rotation, holonomicRotation);
+
+    PathPlannerTrajectory path = PathPlanner.generatePath(pathConstraints, false, pathPointfromCurrentHolonomicState, pathPoint);
     return Commands.sequence(new FollowTrajectory(swerve, path, false));
   }
 }

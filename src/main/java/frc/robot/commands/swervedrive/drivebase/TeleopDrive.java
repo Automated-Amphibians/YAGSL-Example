@@ -36,8 +36,7 @@ public class TeleopDrive extends CommandBase {
    * @param swerve The subsystem used by this command.
    */
   public TeleopDrive(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
-                     BooleanSupplier driveMode, boolean isOpenLoop, boolean headingCorrection)
-  {
+                     BooleanSupplier driveMode, boolean isOpenLoop, boolean headingCorrection) {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
@@ -45,8 +44,7 @@ public class TeleopDrive extends CommandBase {
     this.driveMode = driveMode;    
     this.controller = swerve.getSwerveController();
     this.headingCorrection = headingCorrection;
-    if (headingCorrection)
-    {
+    if (headingCorrection) {
       timer.start();
     }
     // Use addRequirements() here to declare subsystem dependencies.
@@ -55,39 +53,30 @@ public class TeleopDrive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize()
-  {
-    if (headingCorrection)
-    {
+  public void initialize() {
+    if (headingCorrection) {
       lastTime = timer.get();
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
+  public void execute() {
     double xVelocity   = Math.pow(vX.getAsDouble(), 3);
     double yVelocity   = Math.pow(vY.getAsDouble(), 3);
     double angVelocity = Math.pow(omega.getAsDouble(), 3);
     SmartDashboard.putNumber("vX", xVelocity);
     SmartDashboard.putNumber("vY", yVelocity);
     SmartDashboard.putNumber("omega", angVelocity);
-    if (headingCorrection)
-    {
+    if (headingCorrection) {
       // Estimate the desired angle in radians.
       angle += (angVelocity * (timer.get() - lastTime)) * controller.config.maxAngularVelocity;
       // Get the desired ChassisSpeeds given the desired angle and current angle.
-      ChassisSpeeds correctedChassisSpeeds = controller.getTargetSpeeds(xVelocity, yVelocity, angle,
-                                                                        swerve.getHeading().getRadians());
+      ChassisSpeeds correctedChassisSpeeds = controller.getTargetSpeeds(xVelocity, yVelocity, angle, swerve.getHeading().getRadians());
       // Drive using given data points.
-      swerve.drive(
-          SwerveController.getTranslation2d(correctedChassisSpeeds),
-          correctedChassisSpeeds.omegaRadiansPerSecond,
-          driveMode.getAsBoolean());
+      swerve.drive(SwerveController.getTranslation2d(correctedChassisSpeeds), correctedChassisSpeeds.omegaRadiansPerSecond, driveMode.getAsBoolean());
       lastTime = timer.get();
-    } else
-    {
+    } else {
       // Drive using raw values.
       swerve.drive(new Translation2d(xVelocity * controller.config.maxSpeed, yVelocity * controller.config.maxSpeed),
                    angVelocity * controller.config.maxAngularVelocity,
@@ -97,14 +86,12 @@ public class TeleopDrive extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted) {
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     return false;
   }
 }
