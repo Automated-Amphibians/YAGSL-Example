@@ -25,21 +25,18 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.HashMap;
 import java.util.List;
 
-public final class Autos
-{
+public final class Autos {
 
   /**
    * April Tag field layout.
    */
   private static AprilTagFieldLayout aprilTagField = null;
 
-  private Autos()
-  {
+  private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
-  public static CommandBase driveAndSpin(SwerveSubsystem swerve)
-  {
+  public static CommandBase driveAndSpin(SwerveSubsystem swerve) {
     return Commands.sequence(
         new RepeatCommand(new InstantCommand(() -> swerve.drive(new Translation2d(1, 0), 5, true), swerve)));
   }
@@ -47,12 +44,10 @@ public final class Autos
   /**
    * Example static factory for an autonomous command.
    */
-  public static CommandBase exampleAuto(SwerveSubsystem swerve)
-  {
+  public static CommandBase exampleAuto(SwerveSubsystem swerve) {
     boolean               onTheFly = false; // Use the path defined in code or loaded from PathPlanner.
     PathPlannerTrajectory example;
-    if (onTheFly)
-    {
+    if (onTheFly) {
       // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
       example = PathPlanner.generatePath(
           new PathConstraints(4, 3),
@@ -62,9 +57,8 @@ public final class Autos
 // position, heading(direction of travel), holonomic rotation
           new PathPoint(new Translation2d(5, 5), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))
           // position, heading(direction of travel), holonomic rotation
-                                        );
-    } else
-    {
+        );
+    } else {
       List<PathPlannerTrajectory> example1 = PathPlanner.loadPathGroup("SamplePath", new PathConstraints(4, 3));
       // This is just an example event map. It would be better to have a constant, global event map
       // in your code that will be used by all path following commands.
