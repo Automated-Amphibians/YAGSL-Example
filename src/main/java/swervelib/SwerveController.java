@@ -9,34 +9,38 @@ import swervelib.parser.SwerveControllerConfiguration;
 /**
  * Controller class used to convert raw inputs into robot speeds.
  */
-public class SwerveController
-{
+public class SwerveController {
 
   /**
    * {@link SwerveControllerConfiguration} object storing data to generate the {@link PIDController} for controlling the
    * robot heading, and deadband for heading joystick.
    */
   public final SwerveControllerConfiguration config;
+
   /**
    * PID Controller for the robot heading.
    */
-  public final PIDController                 thetaController; // TODO: Switch to ProfilePIDController
+  public final PIDController thetaController; // TODO: Switch to ProfilePIDController
+
   /**
    * Last angle as a scalar [-1,1] the robot was set to.
    */
-  public       double                        lastAngleScalar;
+  public double lastAngleScalar;
+
   /**
    * {@link SlewRateLimiter} for movement in the X direction in meters/second.
    */
-  public       SlewRateLimiter               xLimiter     = null;
+  public SlewRateLimiter xLimiter = null;
+
   /**
    * {@link SlewRateLimiter} for movement in the Y direction in meters/second.
    */
-  public       SlewRateLimiter               yLimiter     = null;
+  public SlewRateLimiter yLimiter = null;
+
   /**
    * {@link SlewRateLimiter} for angular movement in radians/second.
    */
-  public       SlewRateLimiter               angleLimiter = null;
+  public SlewRateLimiter angleLimiter = null;
 
   /**
    * Construct the SwerveController object which is used for determining the speeds of the robot based on controller
