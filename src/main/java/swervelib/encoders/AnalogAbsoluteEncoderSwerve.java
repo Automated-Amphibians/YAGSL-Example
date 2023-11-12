@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.RobotController;
 /**
  * Swerve Absolute Encoder for Thrifty Encoders and other analog encoders.
  */
-public class AnalogAbsoluteEncoderSwerve extends SwerveAbsoluteEncoder {
+public class AnalogAbsoluteEncoderSwerve extends SwerveAbsoluteEncoder  {
   // Entire class inspired by 5010
   // Source: https://github.com/FRC5010/FRCLibrary/blob/main/FRC5010Example2023/src/main/java/frc/robot/FRC5010/sensors/AnalogInput5010.java
 

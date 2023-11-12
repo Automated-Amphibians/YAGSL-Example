@@ -23,12 +23,12 @@ public class SwerveIMUSimulation {
   /**
    * The last time the timer was read, used to determine position changes.
    */
-  private       double lastTime;
+  private double lastTime;
 
   /**
    * Heading of the robot.
    */
-  private       double angle;
+  private double angle;
 
   /**
    * Create the swerve drive IMU simulation.
