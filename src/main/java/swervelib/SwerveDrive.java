@@ -61,7 +61,7 @@ public class SwerveDrive
   /**
    * Swerve modules.
    */
-  private final SwerveModule[] swerveModules;
+  public final SwerveModule[] swerveModules;
 
   /**
    * WPILib {@link Notifier} to keep odometry up to date.
@@ -648,6 +648,7 @@ public class SwerveDrive
     for (SwerveModule swerveModule : swerveModules) {
       SwerveModuleState desiredState =
           new SwerveModuleState(0, swerveModule.configuration.moduleLocation.getAngle());
+      System.out.println(swerveModule.configuration.moduleLocation.getAngle());
       if (SwerveDriveTelemetry.verbosity.ordinal() >= TelemetryVerbosity.HIGH.ordinal()) {
         SwerveDriveTelemetry.desiredStates[swerveModule.moduleNumber * 2] =
             desiredState.angle.getDegrees();

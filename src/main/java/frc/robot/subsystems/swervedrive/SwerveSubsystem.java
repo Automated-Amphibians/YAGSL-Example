@@ -35,13 +35,13 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Swerve drive object.
    */
-  private final SwerveDrive       swerveDrive;
+  public final SwerveDrive swerveDrive;
 
   /**
    * The auto builder for PathPlanner, there can only ever be one created so we save it just incase we generate multiple
    * paths with events.
    */
-  private       SwerveAutoBuilder autoBuilder = null;
+  private SwerveAutoBuilder autoBuilder = null;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.

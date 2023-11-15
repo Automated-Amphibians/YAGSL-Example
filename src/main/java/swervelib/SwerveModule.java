@@ -180,8 +180,7 @@ public class SwerveModule
 
     lastState = desiredState;
 
-    if (SwerveDriveTelemetry.isSimulation)
-    {
+    if (SwerveDriveTelemetry.isSimulation) {
       simModule.updateStateAndPosition(desiredState);
     }
   }
@@ -244,8 +243,7 @@ public class SwerveModule
    *
    * @return Absolute encoder angle in degrees in the range [0, 360).
    */
-  public double getAbsolutePosition()
-  {
+  public double getAbsolutePosition() {
     double angle;
     if (absoluteEncoder != null) {
       angle = absoluteEncoder.getAbsolutePosition() - configuration.angleOffset;

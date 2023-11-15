@@ -118,6 +118,7 @@ public class SwerveModuleConfiguration
     this.angleMotor = angleMotor;
     this.absoluteEncoder = absoluteEncoder;
     this.angleOffset = angleOffset;
+    //this.angleOffset = 0; // just for testing
     this.absoluteEncoderInverted = absoluteEncoderInverted;
     this.driveMotorInverted = driveMotorInverted;
     this.angleMotorInverted = angleMotorInverted;
