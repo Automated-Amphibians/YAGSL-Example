@@ -8,10 +8,13 @@ import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.io.File;
 import java.io.IOException;
+
+import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 
 /**
@@ -140,26 +143,31 @@ public class Robot extends TimedRobot
   {
   }
 
+  private DrivetrainFun drivetrainFun; 
+
   @Override
-  public void testInit()
-  {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-    try
-    {
-      new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve"));
-    } catch (IOException e)
-    {
-      throw new RuntimeException(e);
-    }
+  public void testInit() {
+    // Cancels any currently running commands.
+    CommandScheduler.getInstance().cancelAll();    
+
+    drivetrainFun = new DrivetrainFun(m_robotContainer.drivebase.swerveDrive);
+    drivetrainFun.estimateRobotPositionOnField(3, 3, 0);    
   }
 
-  /**
-   * This function is called periodically during test mode.
-   */
   @Override
-  public void testPeriodic()
-  {
+  public void testPeriodic() {     
+    drivetrainFun.incrementAngle();
+
+    SmartDashboard.putNumber("angle", drivetrainFun.angle);
+    
+    SwerveModule[] swerveModules = m_robotContainer.drivebase.swerveDrive.getModules();
+    for(int x=0;x<swerveModules.length;x++) {
+      //drivetrainFun.setAngleForModule(swerveModules[x], x < 2 ? drivetrainFun.angle : drivetrainFun.angle + 180);
+      //drivetrainFun.setAngleForModule(swerveModules[x], drivetrainFun.angle + (40*x));
+      drivetrainFun.setAngleForModule(swerveModules[x], drivetrainFun.angle);
+    }
+    
+    //m_robotContainer.drivebase.swerveDrive.driveFieldOriented(drivetrainFun.angleAndSpeedToChassisSpeeds(drivetrainFun.angle, 1));
   }
 
   /**

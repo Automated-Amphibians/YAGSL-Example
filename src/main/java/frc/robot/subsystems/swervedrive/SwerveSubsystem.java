@@ -37,7 +37,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Swerve drive object.
    */
-  private final SwerveDrive       swerveDrive;
+  public final SwerveDrive       swerveDrive;
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
