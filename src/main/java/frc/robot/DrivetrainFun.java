@@ -32,6 +32,15 @@ public class DrivetrainFun {
           swerveDrive.getModulePositions(), 
           pose2d);
     }
+
+    static public void estimateRobotPositionOnField(double x, double y, double rotationInDegrees, SwerveDrive swerveDrive) {
+        Pose2d pose2d = new Pose2d(x, y, Rotation2d.fromDegrees(rotationInDegrees));      
+        swerveDrive.swerveDrivePoseEstimator.resetPosition(
+            Rotation2d.fromDegrees(0), 
+            swerveDrive.getModulePositions(), 
+            pose2d);
+      }
+  
   
     public void setAngleForModule(SwerveModule sm, double angle) {
       SwerveModuleState sms = new SwerveModuleState();
@@ -42,17 +51,32 @@ public class DrivetrainFun {
     }
   
     public ChassisSpeeds angleAndSpeedToChassisSpeeds(double angleInDegrees, double speed) {    
+        return angleAndSpeedToChassisSpeeds(angleInDegrees, speed, 0);
+    }
+
+    public ChassisSpeeds angleAndSpeedToChassisSpeeds(double angleInDegrees, double speed, double turnSpeed) {    
       // Convert angle to radians
       double angleRadians = Math.toRadians(angleInDegrees);
   
       // Calculate X and Y components
       double xSpeed = Math.cos(angleRadians) * speed;
-      double ySpeed = Math.sin(angleRadians) * speed;
-      double turnSpeed = 0;
+      double ySpeed = Math.sin(angleRadians) * speed;      
   
       // Now xSpeed and ySpeed hold the X and Y components of the speed
       return ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveDrive.getYaw());
     } 
+
+    static public ChassisSpeeds angleAndSpeedToChassisSpeeds(double angleInDegrees, double speed, double turnSpeed, Rotation2d currentYaw) {    
+        // Convert angle to radians
+        double angleRadians = Math.toRadians(angleInDegrees);
+    
+        // Calculate X and Y components
+        double xSpeed = Math.cos(angleRadians) * speed;
+        double ySpeed = Math.sin(angleRadians) * speed;      
+    
+        // Now xSpeed and ySpeed hold the X and Y components of the speed
+        return ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, currentYaw);
+      } 
     
     public void incrementAngle() {
         angle = angle + change;
