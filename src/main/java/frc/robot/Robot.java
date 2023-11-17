@@ -4,15 +4,16 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.pathplanner.lib.server.PathPlannerServer;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import swervelib.SwerveModule;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as
@@ -22,15 +23,25 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class Robot extends TimedRobot
 {
 
+  static public enum ConfigureMode {
+    SPIN,
+    FREE,
+    ROBOT_DRIVE,
+    FIELD_DRIVE
+  }
   private static Robot   instance;
   private        Command m_autonomousCommand;
-  private SnapTo snapTo = new SnapTo();
+  private DrivetrainFun drivetrainFun;
 
-  private double last_set = 0;
+  //private static TunableDouble tunableModuleId = new TunableDouble("module", 0.0, true, "Swerve Config");
+  //private static TunableEnum<ConfigureMode> tunableEnum = new TunableEnum<>("mode", ConfigureMode.SPIN, ConfigureMode.class, "Swerve Config");
+  //private static TunableBoolean tunableBoolean = new TunableBoolean("setAbsoluteOffset", false, "Swerve Config");
+  private static TunableString tunableString;
 
   private RobotContainer m_robotContainer;
 
   private Timer disabledTimer;
+  private List<String> moduleNames;
 
   public Robot()
   {
@@ -56,6 +67,17 @@ public class Robot extends TimedRobot
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
+    
+    moduleNames = getModuleNames();
+    tunableString = new TunableString("moduleToConfigure", moduleNames.get(0), moduleNames.toArray(new String[] {}), "Swerve Config");
+  }
+
+  public List<String> getModuleNames() {
+    List<String> names = new ArrayList<>();
+    for(SwerveModule sm:m_robotContainer.drivebase.swerveDrive.getModules()) {
+      names.add(sm.configuration.name);
+    }
+    return names;    
   }
 
   /**
@@ -72,7 +94,7 @@ public class Robot extends TimedRobot
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();    
   }
 
   /**
@@ -143,53 +165,28 @@ public class Robot extends TimedRobot
   {
   }
 
-  private double snapAngle;
-  private String lastLookie = ""; 
 
   @Override
   public void testInit() {
     // Cancels any currently running commands.
     CommandScheduler.getInstance().cancelAll();    
+        
     
-    // give snapto a way to measure with the gyroscope
-    snapTo.gyroMeasurement = () -> {return m_robotContainer.drivebase.swerveDrive.getYaw().getDegrees();};
+    // put the robot in an easier to view location on the field    
+    drivetrainFun = new DrivetrainFun(m_robotContainer.drivebase.swerveDrive);
+    drivetrainFun.estimateRobotPositionOnField(3, 3, 0);
 
-    // give snapto a way to turn
-    snapTo.turnMethod =  (turnPower) -> {
-      Rotation2d yaw = m_robotContainer.drivebase.swerveDrive.getYaw();
-      m_robotContainer.drivebase.swerveDrive.driveFieldOriented(DrivetrainFun.angleAndSpeedToChassisSpeeds(0, 0, turnPower, yaw));
-    };
-    
-    // put the robot in an easier to view location on the field
-    DrivetrainFun.estimateRobotPositionOnField(3, 3, 0, m_robotContainer.drivebase.swerveDrive);
 
-    m_robotContainer.setMotorBrake(true);
+    m_robotContainer.setMotorBrake(false);
   }
 
 
   @Override
   public void testPeriodic() {
-    
-    // every 2 seconds we're going to change the snap to angle to a different right angle
-    int currTime = (int)Timer.getFPGATimestamp();
-    if (currTime % 2 == 0) {
-      if (last_set != currTime) {
-        snapAngle = (snapAngle + (int)((Math.random()*2)+1)*90) % 360;
-        snapTo.setSnapTo(snapAngle);        
-        last_set = currTime;
-      }
-    }    
-    
-    // perform one cycle of the snapping action
-    double output = snapTo.doSnapToCycle(0.1, 10);
-
-    // show the amount of power utilized during the snap to action
-    String lookie = String.format("%.3f, %.3f, %.3f", m_robotContainer.drivebase.swerveDrive.getYaw().getDegrees(), output, snapTo.timeToSnap);
-    if (!lastLookie.equals(lookie)) {            
-      System.out.println(lookie);
-      lastLookie = lookie;      
-    }
-      
+    drivetrainFun.incrementAngle();    
+    String moduleName = tunableString.getValue();
+    int moduleIdx = moduleNames.indexOf(moduleName);        
+    drivetrainFun.updateAngleForModule(moduleIdx);    
   }
 
   /**
