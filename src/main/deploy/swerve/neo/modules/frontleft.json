@@ -10,7 +10,7 @@
     "canbus": null
   },
   "encoder": {
-    "type": "cancoder",
+    "type": "thrifty",
     "id": 2,
     "canbus": null
   },
