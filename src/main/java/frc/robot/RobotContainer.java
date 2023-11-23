@@ -72,7 +72,7 @@ public class RobotContainer {
         () -> -driverController.getRawAxis(3), () -> true, false, true);
     */
 
-    drivebase.setDefaultCommand(RobotBase.isSimulation() ? closedFieldAbsoluteDrive : closedAbsoluteDrive);
+    //drivebase.setDefaultCommand(RobotBase.isSimulation() ? closedFieldAbsoluteDrive : closedAbsoluteDrive);
   }
 
   /**
