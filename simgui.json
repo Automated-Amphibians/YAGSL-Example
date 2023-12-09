@@ -48,6 +48,7 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Pigeon 2 [13]": "Gyro",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/navX-Sensor[0]": "Gyro",
       "/SmartDashboard/navX-Sensor[1]": "Gyro"
     },
     "windows": {
