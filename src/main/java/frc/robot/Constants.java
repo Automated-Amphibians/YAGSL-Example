@@ -52,8 +52,8 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int intakeMotorPort = 11;
-    public static final double kOpenSpeed = -1;
-    public static final double kCloseSpeed = 1;
+    public static final double kOpenSpeed = -0.5;
+    public static final double kCloseSpeed = 0.5;
   }
 
   public static final class OIConstants {

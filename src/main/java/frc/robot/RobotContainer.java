@@ -24,6 +24,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 
+//controller import wpilib
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very
@@ -86,7 +89,7 @@ public class RobotContainer {
 
     // drivebase.setDefaultCommand(RobotBase.isSimulation() ?
     // closedFieldAbsoluteDrive : closedAbsoluteDrive);
-    intakeSubsystem.setDefaultCommand(new IntakeSetCmd(intakeSubsystem, true));
+    intakeSubsystem.setDefaultCommand(new IntakeSetCmd(intakeSubsystem, 0.0));
   }
 
   /**
@@ -108,8 +111,10 @@ public class RobotContainer {
     new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
     // new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new
     // InstantCommand(drivebase::lock, drivebase)));
-    new JoystickButton(driverXbox, OIConstants.kIntakeCloseButtonIdx)
-        .whileTrue(new IntakeSetCmd(intakeSubsystem, false));
+    new JoystickButton(driverXbox, XboxController.Button.kY.value)
+        .whileTrue(new IntakeSetCmd(intakeSubsystem, 0.15));
+        new JoystickButton(driverXbox, XboxController.Button.kA.value)
+        .whileTrue(new IntakeSetCmd(intakeSubsystem, -0.15));
   }
 
   /**

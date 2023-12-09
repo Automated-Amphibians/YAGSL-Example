@@ -6,10 +6,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeSetCmd extends CommandBase {
 
     private final IntakeSubsystem intakeSubsystem;
-    private final boolean open;
+    //private final boolean open;
+    private  double speed = 0.0;
 
-    public IntakeSetCmd(IntakeSubsystem intakeSubsystem, boolean open) {
-        this.open = open;
+    public IntakeSetCmd(IntakeSubsystem intakeSubsystem, double speed) {
+        //this.open = open;
+        this.speed = speed;
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(intakeSubsystem);
     }
@@ -21,7 +23,8 @@ public class IntakeSetCmd extends CommandBase {
 
     @Override
     public void execute() {
-        intakeSubsystem.setPosition(open);
+        intakeSubsystem.setPosition(speed);
+        //System.out.print("Command is executing" + open);
     }
 
     @Override
