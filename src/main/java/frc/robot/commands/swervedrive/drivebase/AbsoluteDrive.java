@@ -63,6 +63,7 @@ public class AbsoluteDrive extends CommandBase
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("Executing AbsoluteDrive....");
     // Get the desired chassis speeds based on a 2 joystick module.
 
     ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingHorizontal.getAsDouble(), headingVertical.getAsDouble());

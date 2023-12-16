@@ -117,10 +117,17 @@ public class RobotContainer {
       () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
       () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
       () -> driverXbox.getRawAxis(2));
+    
+      System.out.println("**** Simulation? ***** " + Robot.isSimulation());
 
-    new JoystickButton(driverXbox, XboxController.Axis.kLeftTrigger.value).whileTrue(RobotBase.isSimulation() ?
+    new JoystickButton(driverXbox, XboxController.Axis.kLeftX.value).whileTrue(RobotBase.isSimulation() ?
      closedFieldAbsoluteDrive : closedAbsoluteDrive);
-     new JoystickButton(driverXbox, XboxController.Axis.kRightTrigger.value).whileTrue(RobotBase.isSimulation() ?
+     new JoystickButton(driverXbox, XboxController.Axis.kLeftY.value).whileTrue(RobotBase.isSimulation() ?
+     closedFieldAbsoluteDrive : closedAbsoluteDrive);
+
+     new JoystickButton(driverXbox, XboxController.Axis.kRightX.value).whileTrue(RobotBase.isSimulation() ?
+     closedFieldAbsoluteDrive : closedAbsoluteDrive);
+     new JoystickButton(driverXbox, XboxController.Axis.kRightY.value).whileTrue(RobotBase.isSimulation() ?
      closedFieldAbsoluteDrive : closedAbsoluteDrive);
   }
 
