@@ -56,20 +56,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    AbsoluteDrive closedAbsoluteDrive = new AbsoluteDrive(drivebase,
-        // Applies deadbands and inverts controls because joysticks
-        // are back-right positive while robot
-        // controls are front-left positive
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverXbox.getRightX(),
-        () -> -driverXbox.getRightY(),
-        false);
 
-    AbsoluteFieldDrive closedFieldAbsoluteDrive = new AbsoluteFieldDrive(drivebase,
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> driverXbox.getRawAxis(2));
     /*
      * TeleopDrive simClosedFieldRel = new TeleopDrive(drivebase,
      * () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
@@ -109,12 +96,32 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
     new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-    // new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new
-    // InstantCommand(drivebase::lock, drivebase)));
+
     new JoystickButton(driverXbox, XboxController.Button.kY.value)
         .whileTrue(new IntakeSetCmd(intakeSubsystem, 0.15));
         new JoystickButton(driverXbox, XboxController.Button.kA.value)
         .whileTrue(new IntakeSetCmd(intakeSubsystem, -0.15));
+    
+      // setting swerve drive commands
+      AbsoluteDrive closedAbsoluteDrive = new AbsoluteDrive(drivebase,
+      // Applies deadbands and inverts controls because joysticks
+      // are back-right positive while robot
+      // controls are front-left positive
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> -driverXbox.getRightX(),
+      () -> -driverXbox.getRightY(),
+      false);
+
+  AbsoluteFieldDrive closedFieldAbsoluteDrive = new AbsoluteFieldDrive(drivebase,
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+      () -> driverXbox.getRawAxis(2));
+
+    new JoystickButton(driverXbox, XboxController.Axis.kLeftTrigger.value).whileTrue(RobotBase.isSimulation() ?
+     closedFieldAbsoluteDrive : closedAbsoluteDrive);
+     new JoystickButton(driverXbox, XboxController.Axis.kRightTrigger.value).whileTrue(RobotBase.isSimulation() ?
+     closedFieldAbsoluteDrive : closedAbsoluteDrive);
   }
 
   /**
