@@ -4,6 +4,7 @@
 
 package frc.robot.commands.swervedrive.drivebase;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,9 +26,10 @@ public class AbsoluteDriveAdv extends Command
 
   private final SwerveSubsystem swerve;
   private final DoubleSupplier  vX, vY;
-  private final DoubleSupplier  headingAdjust;
-  private final BooleanSupplier lookAway, lookTowards, lookLeft, lookRight;
-  private       boolean         resetHeading = false;
+  private final DoubleSupplier  rotationalVelocity;  
+  private Rotation2d targetHeading = null;
+  private boolean isKeptTarget = false;
+  private boolean fieldOriented = true;
 
   /**
    * Used to drive a swerve robot in full field-centric mode.  vX and vY supply translation inputs, where x is
@@ -41,62 +43,54 @@ public class AbsoluteDriveAdv extends Command
    * @param vY            DoubleSupplier that supplies the y-translation joystick input.  Should be in the range -1 to 1
    *                      with deadband already accounted for.  Positive Y is towards the left wall when looking through
    *                      the driver station glass.
-   * @param headingAdjust DoubleSupplier that supplies the component of the robot's heading angle that should be
+   * @param rotationalVelocity DoubleSupplier that supplies the component of the robot's heading angle that should be
    *                      adjusted. Should range from -1 to 1 with deadband already accounted for.
-   * @param lookAway      Face the robot towards the opposing alliance's wall in the same direction the driver is
-   *                      facing
-   * @param lookTowards   Face the robot towards the driver
-   * @param lookLeft      Face the robot left
-   * @param lookRight     Face the robot right
+
    */
-  public AbsoluteDriveAdv(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier headingAdjust,
-                          BooleanSupplier lookAway, BooleanSupplier lookTowards, BooleanSupplier lookLeft,
-                          BooleanSupplier lookRight)
-  {
+  public AbsoluteDriveAdv(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier rotationalVelocity) {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
-    this.headingAdjust = headingAdjust;
-    this.lookAway = lookAway;
-    this.lookTowards = lookTowards;
-    this.lookLeft = lookLeft;
-    this.lookRight = lookRight;
-
+    this.rotationalVelocity = rotationalVelocity;
+    this.targetHeading = null;
+    this.isKeptTarget = false;
+    this.fieldOriented = true;
     addRequirements(swerve);
   }
 
   @Override
-  public void initialize()
-  {
-    resetHeading = true;
+  public void initialize() {    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
-    double headingX = 0;
-    double headingY = 0;
+  public void execute() {    
+    
+    //ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), Rotation2d.fromDegrees(90));
+    
+    Rotation2d heading = swerve.getHeading();
+    Double requestedRotationalVel = rotationalVelocity.getAsDouble();
 
-    // These are written to allow combinations for 45 angles
-    // Face Away from Drivers
-    if (lookAway.getAsBoolean()) {
-      headingY = -1;
+    // if controller is requesting rotation.... 
+    if (Math.abs(requestedRotationalVel) > 0) {
+      if (this.targetHeading == null) {
+        // we're going to provide a target to rotate to relative to where we currently are
+        this.targetHeading = Rotation2d.fromDegrees(heading.getDegrees() + (requestedRotationalVel * Constants.MAX_ANGULAR_DEGREES));
+      }
+    } else {      
+      // if the controller is NOT requesting any rotation, we'll clear the target heading. 
+      if (!this.isKeptTarget) {
+        this.targetHeading = null;
+      }
     }
-    // Face Right
-    if (lookRight.getAsBoolean()) {
-      headingX = 1;
-    }
-    // Face Left
-    if (lookLeft.getAsBoolean()) {
-      headingX = -1;
-    }
-    // Face Towards the Drivers
-    if (lookTowards.getAsBoolean()) {
-      headingY = 1;
-    }
-
-    ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingX, headingY);
+      
+    ChassisSpeeds desiredSpeeds;  
+    desiredSpeeds = swerve.getSwerveController().getTargetSpeeds(
+                      vX.getAsDouble(),
+                      vY.getAsDouble(),
+                      this.targetHeading == null ? heading.getRadians() : this.targetHeading.getRadians(),
+                      heading.getRadians(),                      
+                      Constants.MAX_SPEED);    
 
     // Limit velocity to prevent tippy
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
@@ -108,24 +102,35 @@ public class AbsoluteDriveAdv extends Command
                                            List.of(Constants.CHASSIS),
                                            swerve.getSwerveDriveConfiguration());
 
+    //SlewRateLimiter srl = new SlewRateLimiter(headingY);
+
     SmartDashboard.putNumber("LimitedTranslation", translation.getX());
     SmartDashboard.putString("Translation", translation.toString());
 
-    // Make the robot move
-    swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
+    if (Math.abs(rotationalVelocity.getAsDouble()) > 0) {      
+      desiredSpeeds.omegaRadiansPerSecond = Constants.OperatorConstants.TURN_CONSTANT * -rotationalVelocity.getAsDouble();
+    } 
+    swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, this.fieldOriented);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted) {
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     return false;
+  }
+
+  public void setTargetHeading(Rotation2d heading) {
+    this.targetHeading = heading;
+    this.isKeptTarget = true;
+  }
+
+  public void setFieldOriented(boolean b) {
+    this.fieldOriented = b;
   }
 
 

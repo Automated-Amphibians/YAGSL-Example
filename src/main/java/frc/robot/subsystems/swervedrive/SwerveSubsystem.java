@@ -42,41 +42,14 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-public class SwerveSubsystem extends SubsystemBase
-{
+public class SwerveSubsystem extends SubsystemBase {
 
-  /**
-   * PhotonVision class to keep an accurate odometry.
-   */
-  private       Vision  vision;
-  /**
-   * Swerve drive object.
-   */
   private final SwerveDrive         swerveDrive;
-  /**
-   * AprilTag field layout.
-   */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-  /**
-   * Enable vision odometry updates while driving.
-   */
   private final boolean visionDriveTest = false;
 
-  /**
-   * Initialize {@link SwerveDrive} with the directory provided.
-   *
-   * @param directory Directory of swerve drive config files.
-   */
-  public SwerveSubsystem(File directory)
-  {
-    // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
-    //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
-    //  The encoder resolution per motor revolution is 1 per motor revolution.
+  public SwerveSubsystem(File directory) {
     double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(12.8);
-    // Motor conversion factor is (PI * WHEEL DIAMETER IN METERS) / (GEAR RATIO * ENCODER RESOLUTION).
-    //  In this case the wheel diameter is 4 inches, which must be converted to meters to get meters/second.
-    //  The gear ratio is 6.75 motor revolutions per wheel rotation.
-    //  The encoder resolution per motor revolution is 1 per motor revolution.
     double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
     System.out.println("\"conversionFactors\": {");
     System.out.println("\t\"angle\": {\"factor\": " + angleConversionFactor + " },");
@@ -98,7 +71,7 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     if (visionDriveTest)
     {
-      setupPhotonVision();
+      //setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
@@ -114,37 +87,21 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED);
-  }
-
-  /**
-   * Setup the photon vision class.
-   */
-  public void setupPhotonVision()
-  {
-    vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-  }
+  }  
 
   @Override
-  public void periodic()
-  {
-    // When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest)
-    {
+  public void periodic() {    
+    if (visionDriveTest) {
       swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
+      //vision.updatePoseEstimation(swerveDrive);
     }
   }
 
   @Override
-  public void simulationPeriodic()
-  {
+  public void simulationPeriodic() {
   }
 
-  /**
-   * Setup AutoBuilder for PathPlanner.
-   */
-  public void setupPathPlanner()
-  {
+  public void setupPathPlanner() {
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -178,21 +135,14 @@ public class SwerveSubsystem extends SubsystemBase
    *
    * @return Distance to speaker in meters.
    */
-  public double getDistanceToSpeaker()
-  {
+  public double getDistanceToSpeaker() {
     int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
     // Taken from PhotonUtils.getDistanceToPose
     Pose3d speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
     return getPose().getTranslation().getDistance(speakerAprilTagPose.toPose2d().getTranslation());
   }
 
-  /**
-   * Get the yaw to aim at the speaker.
-   *
-   * @return {@link Rotation2d} of which you need to achieve.
-   */
-  public Rotation2d getSpeakerYaw()
-  {
+  public Rotation2d getSpeakerYaw() {
     int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
     // Taken from PhotonUtils.getYawToPose()
     Pose3d        speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
@@ -200,14 +150,7 @@ public class SwerveSubsystem extends SubsystemBase
     return new Rotation2d(relativeTrl.getX(), relativeTrl.getY()).plus(swerveDrive.getOdometryHeading());
   }
 
-  /**
-   * Aim the robot at the speaker.
-   *
-   * @param tolerance Tolerance in degrees.
-   * @return Command to turn the robot to the speaker.
-   */
-  public Command aimAtSpeaker(double tolerance)
-  {
+  public Command aimAtSpeaker(double tolerance) {
     SwerveController controller = swerveDrive.getSwerveController();
     return run(
         () -> {
@@ -275,18 +218,8 @@ public class SwerveSubsystem extends SubsystemBase
                                      );
   }
 
-  /**
-   * Command to drive the robot using translative values and heading as a setpoint.
-   *
-   * @param translationX Translation in the X direction. Cubed for smoother controls.
-   * @param translationY Translation in the Y direction. Cubed for smoother controls.
-   * @param headingX     Heading X to calculate angle of the joystick.
-   * @param headingY     Heading Y to calculate angle of the joystick.
-   * @return Drive command.
-   */
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-                              DoubleSupplier headingY)
-  {
+                              DoubleSupplier headingY) {
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
 
