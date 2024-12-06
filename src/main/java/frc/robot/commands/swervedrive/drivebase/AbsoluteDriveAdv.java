@@ -80,61 +80,39 @@ public class AbsoluteDriveAdv extends Command
 
     // These are written to allow combinations for 45 angles
     // Face Away from Drivers
-    if (lookAway.getAsBoolean())
-    {
+    if (lookAway.getAsBoolean()) {
       headingY = -1;
     }
     // Face Right
-    if (lookRight.getAsBoolean())
-    {
+    if (lookRight.getAsBoolean()) {
       headingX = 1;
     }
     // Face Left
-    if (lookLeft.getAsBoolean())
-    {
+    if (lookLeft.getAsBoolean()) {
       headingX = -1;
     }
     // Face Towards the Drivers
-    if (lookTowards.getAsBoolean())
-    {
+    if (lookTowards.getAsBoolean()) {
       headingY = 1;
-    }
-
-    // Prevent Movement After Auto
-    if (resetHeading)
-    {
-      if (headingX == 0 && headingY == 0 && Math.abs(headingAdjust.getAsDouble()) == 0)
-      {
-        // Get the curret Heading
-        Rotation2d currentHeading = swerve.getHeading();
-
-        // Set the Current Heading to the desired Heading
-        headingX = currentHeading.getSin();
-        headingY = currentHeading.getCos();
-      }
-      //Dont reset Heading Again
-      resetHeading = false;
     }
 
     ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(), headingX, headingY);
 
     // Limit velocity to prevent tippy
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
-    translation = SwerveMath.limitVelocity(translation, swerve.getFieldVelocity(), swerve.getPose(),
-                                           Constants.LOOP_TIME, Constants.ROBOT_MASS, List.of(Constants.CHASSIS),
+
+    translation = SwerveMath.limitVelocity(translation, 
+                                           swerve.getFieldVelocity(), swerve.getPose(),
+                                           Constants.LOOP_TIME, 
+                                           Constants.ROBOT_MASS, 
+                                           List.of(Constants.CHASSIS),
                                            swerve.getSwerveDriveConfiguration());
+
     SmartDashboard.putNumber("LimitedTranslation", translation.getX());
     SmartDashboard.putString("Translation", translation.toString());
 
     // Make the robot move
-    if (headingX == 0 && headingY == 0 && Math.abs(headingAdjust.getAsDouble()) > 0)
-    {
-      resetHeading = true;
-      swerve.drive(translation, (Constants.OperatorConstants.TURN_CONSTANT * -headingAdjust.getAsDouble()), true);
-    } else
-    {
-      swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
-    }
+    swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
   }
 
   // Called once the command ends or is interrupted.
