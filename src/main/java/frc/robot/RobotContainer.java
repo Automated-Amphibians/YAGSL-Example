@@ -22,10 +22,11 @@ import java.io.File;
  */
 public class RobotContainer {  
   final CommandXboxController driverXbox = new CommandXboxController(0);  
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/sonic"));
+  public final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/sonic"));
   private double flip = 1.0;
   
   private AbsoluteDriveAdv closedAbsoluteDriveAdv;
+  private OurShuffleboard shuffleboard;
 
   public RobotContainer() {
     
@@ -50,7 +51,8 @@ public class RobotContainer {
       );
     configureDriverBindings();
     drivebase.setDefaultCommand(closedAbsoluteDriveAdv);
-    
+    this.shuffleboard = new OurShuffleboard(this); 
+
   }
 
   private Command getSetTargetHeadingCmd(int heading) {
@@ -67,14 +69,14 @@ public class RobotContainer {
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.runOnce(() -> {flip = flip * -1;}));
     driverXbox.leftBumper().onTrue(Commands.runOnce(() -> {
-      flip = flip < 0.0 ? flip + 0.25 : flip - 0.25;
-      if (Math.abs(flip) < 0.5) {
+      flip = flip < 0.0 ? flip + 0.33 : flip - 0.33;
+      if (Math.abs(flip) < 0.3) {
         flip = flip < 0.0 ? -1 : 1;
       }
     }));
     driverXbox.rightTrigger()
        .onTrue(Commands.runOnce(() -> {
-         flip = flip < 0 ? -0.5 : 0.5;
+         flip = flip < 0 ? -0.3 : 0.3;
        }))
        .onFalse(Commands.runOnce(() -> {
         flip = flip < 0 ? -1 : 1;
