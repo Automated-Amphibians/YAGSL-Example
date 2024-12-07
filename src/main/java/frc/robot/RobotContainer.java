@@ -41,7 +41,7 @@ public class RobotContainer {
             () -> -MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND) * flip,
             () -> -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND) * flip
       );
-    configureBindings();
+    configureDriverBindings();
     drivebase.setDefaultCommand(closedAbsoluteDriveAdv);
     
   }
@@ -56,7 +56,7 @@ public class RobotContainer {
     });
   }
 
-  private void configureBindings() {    
+  private void configureDriverBindings() {    
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.runOnce(() -> {flip = flip * -1;}));
     driverXbox.leftBumper().onTrue(Commands.runOnce(() -> {
@@ -86,8 +86,4 @@ public class RobotContainer {
     //driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
   }  
 
-  public void setMotorBrake(boolean brake) {
-    drivebase.setMotorBrake(brake);
-    
-  }
 }
