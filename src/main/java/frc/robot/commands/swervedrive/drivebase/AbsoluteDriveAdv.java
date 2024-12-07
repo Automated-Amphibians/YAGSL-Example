@@ -4,7 +4,6 @@
 
 package frc.robot.commands.swervedrive.drivebase;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
 import swervelib.math.SwerveMath;
@@ -72,14 +70,13 @@ public class AbsoluteDriveAdv extends Command
     Double requestedRotationalVel = rotationalVelocity.getAsDouble();
 
     // if controller is requesting rotation.... 
-    if (Math.abs(requestedRotationalVel) > 0) {
-      if (this.targetHeading == null) {
-        // we're going to provide a target to rotate to relative to where we currently are
-        this.targetHeading = Rotation2d.fromDegrees(heading.getDegrees() + (requestedRotationalVel * Constants.MAX_ANGULAR_DEGREES));
-      }
+    if (Math.abs(requestedRotationalVel) > 0) {      
+       // we're going to provide a target to rotate to relative to where we currently are
+      this.targetHeading = Rotation2d.fromDegrees(heading.getDegrees() + (requestedRotationalVel * Constants.MAX_ANGULAR_DEGREES));      
+      this.isKeptTarget = false;      
     } else {      
-      // if the controller is NOT requesting any rotation, we'll clear the target heading. 
-      if (!this.isKeptTarget) {
+      // if the controller is NOT requesting any rotation and we didn't use a snap-to last, then we can clear the target heading
+      if (!this.isKeptTarget) {      
         this.targetHeading = null;
       }
     }

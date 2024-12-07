@@ -5,16 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -25,10 +20,8 @@ import java.io.File;
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  final CommandXboxController driverXbox = new CommandXboxController(0);
-  // The robot's subsystems and commands are defined here...
+public class RobotContainer {  
+  final CommandXboxController driverXbox = new CommandXboxController(0);  
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/sonic"));
   private double flip = 1.0;
   
@@ -36,9 +29,23 @@ public class RobotContainer {
 
   public RobotContainer() {
     
-     closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
-            () -> -MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND) * flip,
-            () -> -MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND) * flip,
+     closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,     
+            () -> {
+              int pov = driverXbox.getHID().getPOV();
+              if (pov > -1) {
+                return Rotation2d.fromDegrees(pov).getCos() * flip;
+              } else {
+                return -MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND) * flip;
+              }
+            },
+            () -> {
+              int pov = driverXbox.getHID().getPOV();
+              if (pov > -1) {
+                return Rotation2d.fromDegrees(pov - 180).getSin() * flip;
+              } else {
+                return -MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND) * flip;
+              }
+            },
             () -> -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND) * flip
       );
     configureDriverBindings();
@@ -80,9 +87,9 @@ public class RobotContainer {
         closedAbsoluteDriveAdv.setFieldOriented(true);
        }));
     driverXbox.y().onTrue(getSetTargetHeadingCmd(0));
-    driverXbox.x().onTrue(getSetTargetHeadingCmd(270));
+    driverXbox.x().onTrue(getSetTargetHeadingCmd(90));
     driverXbox.a().onTrue(getSetTargetHeadingCmd(180));
-    driverXbox.b().onTrue(getSetTargetHeadingCmd(90));
+    driverXbox.b().onTrue(getSetTargetHeadingCmd(270));
     //driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
   }  
 
