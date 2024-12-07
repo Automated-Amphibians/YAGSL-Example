@@ -22,7 +22,7 @@ import java.io.File;
  */
 public class RobotContainer {  
   final CommandXboxController driverXbox = new CommandXboxController(0);  
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/sonic"));
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/ruby"));
   private double flip = 1.0;
   
   private AbsoluteDriveAdv closedAbsoluteDriveAdv;
